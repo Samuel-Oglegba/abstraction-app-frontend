@@ -11,8 +11,8 @@ class App extends React.Component {
      //set the initial state
       this.state = {
 
-        dot_language_input: "digraph {A ->B}",
-        dot_language: "digraph {A ->B}",
+        dot_language_input: "digraph {A ->B [label=a_b]}",
+        dot_language: "digraph {A ->B [label=a_b]}",
         implementation_details: "",
 
       }
@@ -90,17 +90,30 @@ class App extends React.Component {
           <div className="col-sm-4">
             <h2>Dot Language</h2>
             <nav className="navbar navbar-expand-sm bg-dark navbar-dark">
-              <a className="navbar-brand" href="#">File</a>
+            
+               <ul className="navbar-nav mr-auto">
+                  <li className="nav-item dropdown">
+                    <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      File
+                    </a>
+                    <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <a className="dropdown-item" href="#">Open File</a>
+                      <a className="dropdown-item" href="#">Open Folder</a>
+                      <div className="dropdown-divider"></div>
+                      <a className="dropdown-item" href="#">Save</a>
+                    </div>
+                  </li>
+                </ul>
                 <ul className="navbar-nav ml-auto"> 
-                  <li className="nav-item">
-                    <a className="nav-link" id="refresh_input" href="#"><span className="fa fa-repeat"></span></a>
-                </li>  
-                  <li className="nav-item">
-                    <a className="nav-link" id="run_graph" onClick={() => this.handleRunGraphClick()} href="#"><span className="fa fa-play"></span></a>
-                </li>
-                <li className="nav-item pull-right">
-                  <a className="nav-link" id="delete_input" href="#"><span className="fa fa-trash"></span></a>
-              </li>
+                      <li className="nav-item">
+                          <a className="nav-link" id="refresh_input" href="#"><span className="fa fa-repeat"></span></a>
+                      </li>  
+                      <li className="nav-item">
+                          <a className="nav-link" id="run_graph" onClick={() => this.handleRunGraphClick()} href="#"><span className="fa fa-play"></span></a>
+                      </li>
+                      <li className="nav-item pull-right">
+                        <a className="nav-link" id="delete_input" href="#"><span className="fa fa-trash"></span></a>
+                      </li>
 
                 </ul>
             </nav>
