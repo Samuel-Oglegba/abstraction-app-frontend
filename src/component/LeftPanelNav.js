@@ -12,6 +12,14 @@ export default class LeftPanelNav extends Component {
     this.props.handleRunGraphClick();
   };
 
+  /**
+   * handles when the clear button is clicked on
+   */
+  runClearGraphClick = () => {
+    this.props.handleClearButtonClick();
+  };
+
+
   render() {
     return (
         <nav className="navbar navbar-expand-sm bg-dark navbar-dark">
@@ -30,13 +38,13 @@ export default class LeftPanelNav extends Component {
             </ul>
             <ul className="navbar-nav ml-auto"> 
                   <li className="nav-item">
-                      <a className="nav-link" id="refresh_input" href="#"><span className="fa fa-repeat"></span></a>
+                      <a className="nav-link" id="refresh_input" onClick={() => this.runClearGraphClick()} href="#" title="Reset Dot Input To Default"><span className="fa fa-repeat"></span></a>
                   </li>  
                   <li className="nav-item">
-                      <a className="nav-link" id="run_graph" onClick={() => this.runGraphClick()} href="#"><span className="fa fa-play"></span></a>
+                      <a className="nav-link" id="run_graph" onClick={() => this.runGraphClick()} href="#" title="Run Dot Input"><span className="fa fa-play"></span></a>
                   </li>
                   <li className="nav-item pull-right">
-                    <a className="nav-link" id="delete_input" href="#"><span className="fa fa-trash"></span></a>
+                    <a className="nav-link" id="delete_input" href="#"><span className="fa fa-trash" title="Delete All results"></span></a>
                   </li>
             </ul>
         </nav>

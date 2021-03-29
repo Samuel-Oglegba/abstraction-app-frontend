@@ -1,7 +1,9 @@
-import React, { Component } from "react";
+import React, { useState, useEffect, Component } from "react";
 import { Graphviz } from 'graphviz-react';
 import { select } from 'd3-selection'
 import RightPanelNav from './RightPanelNav';
+
+import { getData } from "../adapter/homeAdapter";
 
 export default class RightPanel extends Component {
     constructor(props){  
@@ -25,24 +27,81 @@ export default class RightPanel extends Component {
    */
   handleGraphInteractivity = () =>{
    
-    let nodes = select("g");
-    nodes.selectAll("g").on("click", function(){
+        let nodes = select("g");
+        nodes.selectAll("g").on("click", function(){
    
-        var node = select(this);
-        var text = node.selectAll('text').text();
-        var id = node.attr('id');
-        var class1 = node.attr('class');
-        var dotElement = id.replace(/^a_/, '');
+            var node = select(this);
 
-        /**
-         * TODO::: carry out code abstraction request here
-         */
-        //temporary display of what you clicked on
-        document.getElementById("show_implementation").innerHTML = 'You Clicked on :: ' + text
+            //ensure the node/edge is not empty
+          if(!node.selectAll('text').empty()){
+
+              var text = node.selectAll('text').text();
+              var id = node.attr('id');
+              var class1 = node.attr('class');
+              var dotElement = id.replace(/^a_/, '');
+
+              //console.log(id);
+              //document.getElementById("show_implementation").innerHTML = 'You Clicked on :: ' + text
+             // this.makeAPICall(text);
+             //for nodes
+               if(id.includes("node")){
+
+                  getData(`http://localhost:8060/api/v1/operation-task/${text}` )
+                  .then(res => {
+                    //console.log(res);
+                    //console.log(res.data);
+                    let taskName = res.data.task.name;
+                    let operation = res.data.operation.name;
+                    let communication = res.data.communication.variableName;
+
+                    let displayData = `Function: ${text}</br> Operation: ${operation}</br> Communication: ${communication}`;
+
+                    document.getElementById("show_implementation").innerHTML = displayData;
+                  
+                  })
+                  .catch(error => { 
+                    //console.log(error);
+                    document.getElementById("show_implementation").innerHTML = "";
+                      if (error.response) {
+                        //console.log(error.response.data);//console.log(error.response.status);//console.log(error.response.headers);
+                        document.getElementById("show_implementation").innerHTML = error.response.data.error;
+                      }
+                  });
+               }
+               else{
+                 //for edges
+                 document.getElementById("show_implementation").innerHTML = 'You Clicked on the Edge :: ' + text
+               }
+                 
+          
+               
+          }
+          else{
+            document.getElementById("show_implementation").innerHTML = 'The edge/node is empty'
+          }
+       
       
-    });
+      });
 
   }//handleGraphInteractivity
+
+  makeAPICall = (taskName) => {
+      //for test purpose
+      try {
+        getData(`http://localhost:8060/api/v1/operation-task/${taskName}` )
+          .then(res => {
+            //console.log(res);
+            console.log(res.data);
+          })
+          .catch(error => { 
+            console.log(error);
+          });
+
+      } catch (e) {
+        console.log(`Axios request failed: ${e}`);
+      }
+
+  }//makeAPICall
 
   render() {
     const options = {"fit":true, "height":"200px", "zoom":false};
