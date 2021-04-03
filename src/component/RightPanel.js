@@ -2,13 +2,19 @@ import React, { useState, useEffect, Component } from "react";
 import { Graphviz } from 'graphviz-react';
 import { select } from 'd3-selection'
 import RightPanelNav from './RightPanelNav';
+import logo from '../logo.svg';
+import '../App.css';
 
-import { getData } from "../adapter/homeAdapter";
+import { getData, sleeper } from "../adapter/homeAdapter";
 
 export default class RightPanel extends Component {
     constructor(props){  
-        super(props);  
-      } 
+        super(props);
+
+      this.state = {
+         isLoading: true
+       }
+    } 
 /**
  * handle when the compnents finish loading
  */
@@ -25,8 +31,9 @@ export default class RightPanel extends Component {
   /**
    * handle graph click
    */
+
   handleGraphInteractivity = () =>{
-   
+
         let nodes = select("g");
         nodes.selectAll("g").on("click", function(){
    
@@ -47,6 +54,7 @@ export default class RightPanel extends Component {
                if(id.includes("node")){
 
                   getData(`http://localhost:8060/api/v1/operation-task/${text}` )
+                  //.then(sleeper(5000))
                   .then(res => {
                     //console.log(res);
                     //console.log(res.data);
@@ -69,16 +77,16 @@ export default class RightPanel extends Component {
                   });
                }
                else{
+
                  //for edges
                  document.getElementById("show_implementation").innerHTML = 'You Clicked on the Edge :: ' + text
-               }
-                 
-          
-               
+
+               }//else
+           
           }
           else{
             document.getElementById("show_implementation").innerHTML = 'The edge/node is empty'
-          }
+          }//else
        
       
       });
@@ -105,6 +113,7 @@ export default class RightPanel extends Component {
 
   render() {
     const options = {"fit":true, "height":"200px", "zoom":false};
+
     return (
         <div className="col-sm-8">
         <h2>Task Graph</h2>
@@ -115,7 +124,10 @@ export default class RightPanel extends Component {
             </div>
 
             <h4>Implementation Details</h4>
-            <div className="rightPanelButtom" id="show_implementation">{this.props.implementation_details}</div>
+            <div className="rightPanelButtom" id="show_implementation">
+                {this.props.implementation_details}
+                { this.state.isLoading ? <img src={logo} className="App-logo" alt="logo" /> : null}
+            </div>
                     
         </div>
     );
