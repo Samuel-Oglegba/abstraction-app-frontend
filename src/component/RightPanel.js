@@ -53,7 +53,7 @@ export default class RightPanel extends Component {
              //for nodes
                if(id.includes("node")){
 
-                  getData(`http://localhost:8085/api/v1/operation-task/${text}` )
+                  getData(`http://128.198.162.140:8085/api/v1/operation-task/${text}` )
                   //.then(sleeper(5000))
                   .then(res => {
                     //console.log(res);
@@ -96,7 +96,7 @@ export default class RightPanel extends Component {
   makeAPICall = (taskName) => {
       //for test purpose
       try {
-        getData(`http://localhost:8085/api/v1/operation-task/${taskName}` )
+        getData(`http://128.198.162.140:8085/api/v1/operation-task/${taskName}` )
           .then(res => {
             //console.log(res);
             console.log(res.data);
