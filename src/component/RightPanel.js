@@ -5,7 +5,7 @@ import RightPanelNav from './RightPanelNav';
 import logo from '../logo.svg';
 import '../App.css';
 
-import { getData, sleeper } from "../adapter/homeAdapter";
+import { getData, baseUrl, sleeper } from "../adapter/homeAdapter";
 
 export default class RightPanel extends Component {
     constructor(props){  
@@ -53,16 +53,29 @@ export default class RightPanel extends Component {
              //for nodes
                if(id.includes("node")){
 
-                  getData(`http://128.198.162.140:8085/api/v1/operation-task/${text}` )
+                  let url = baseUrl()+`/api/v1/operation-task/${text}`;
+                  getData(url)
                   //.then(sleeper(5000))
                   .then(res => {
-                    //console.log(res);
-                    //console.log(res.data);
-                    let taskName = res.data.task.name;
-                    let operation = res.data.operation.name;
-                    let communication = res.data.communication.variableName;
+                   // console.log(res);
+                    console.log(res.data);
 
-                    let displayData = `Function: ${text}</br> Operation: ${operation}</br> Communication: ${communication}`;
+                    let taskName = res.data[0].task.name;
+                    let operation = "";//res.data.operation.name;
+                    let communication = "";//res.data.communication.variableName;
+
+                    let table = "<table className='class'>";
+                    table += "<tr> <thead><th>Operation</th><th>Communication</th></tr></thead>";
+                    table += "  <tbody>";
+                    res.data.forEach(function(value, index){
+                     table += "<tr><td>"+value.operation.name+"</td><td><a href='#'>"+value.communication.variableName+"</a></td></tr>";
+                    });
+
+                    table += "  </tbody>";
+                    table += "</table>";
+                    
+                    //let displayData = `Function: ${text}</br> Operation: ${operation}</br> Communication: ${communication}`;
+                    let displayData = `Function: ${text}</br>${table}`;
 
                     document.getElementById("show_implementation").innerHTML = displayData;
                   
