@@ -45,41 +45,43 @@ export default class RightPanel extends Component {
               var text = node.selectAll('text').text();
               var id = node.attr('id');
               var class1 = node.attr('class');
+              var title = node.attr('innerHTML');
               var dotElement = id.replace(/^a_/, '');
 
               //console.log(id);
               //document.getElementById("show_implementation").innerHTML = 'You Clicked on :: ' + text
              // this.makeAPICall(text);
              //for nodes
+               let nodeUrl = baseUrl()+`/api/v1/operation-task/${text}`;
+               let edgeUrl = baseUrl()+`/api/v1/edge-task/${text}`;
+
                if(id.includes("node")){
 
-                  let url = baseUrl()+`/api/v1/operation-task/${text}`;
-                  getData(url)
+                  getData(nodeUrl)
                   //.then(sleeper(5000))
                   .then(res => {
                    // console.log(res);
-                    console.log(res.data);
+                   // console.log(res.data);
 
                     let taskName = res.data[0].task.name;
                     let operation = "";//res.data.operation.name;
                     let communication = "";//res.data.communication.variableName;
 
-                    let table = "<table className='class'>";
-                    table += "<tr> <thead><th>Operation</th><th>Communication</th></tr></thead>";
+                    let table = "<br><table class='table table-dark table-bordered '>";
+                    table += `<tr><thead><th colspan='2'>Funcition: ${text}</th></tr></thead>`;
+                    table += "<tr><thead><th>Operation</th><th>Communication</th></tr></thead>";
                     table += "  <tbody>";
                     res.data.forEach(function(value, index){
-                     table += "<tr><td>"+value.operation.name+"</td><td><a href='#'>"+value.communication.variableName+"</a></td></tr>";
+                     table += `<tr><td>`+value.operation.name+`</td><td><a href="#" onclick="return alert('clicked on the edge ${taskName}')">`+value.communication.variableName+"</a></td></tr>";
                     });
-
                     table += "  </tbody>";
                     table += "</table>";
                     
                     //let displayData = `Function: ${text}</br> Operation: ${operation}</br> Communication: ${communication}`;
-                    let displayData = `Function: ${text}</br>${table}`;
-
-                    document.getElementById("show_implementation").innerHTML = displayData;
+                   // let displayData = `${table}`;
+                    document.getElementById("show_implementation").innerHTML = table;
                   
-                  })
+                  })//getData
                   .catch(error => { 
                     //console.log(error);
                     document.getElementById("show_implementation").innerHTML = "";
@@ -87,12 +89,49 @@ export default class RightPanel extends Component {
                         //console.log(error.response.data);//console.log(error.response.status);//console.log(error.response.headers);
                         document.getElementById("show_implementation").innerHTML = error.response.data.error;
                       }
-                  });
-               }
+                  });//catch
+               }//if
                else{
 
-                 //for edges
-                 document.getElementById("show_implementation").innerHTML = 'You Clicked on the Edge :: ' + text
+                getData(edgeUrl)
+                .then(res => {
+                  //console.log(res.data);
+
+                  let table = "<br><table class='table table-dark table-bordered '>";
+                  table += `<tr><thead><th>Edge Name: ${text}</th></tr></thead>`;
+                  table += "<tr><thead><th>Task</th></tr></thead>";
+                  table += "  <tbody>";
+
+                  //TODO: change to the proper code for picking just the two edges involved
+                  
+                  res.data.forEach(function(value, index){
+                   let taskName = value.task.name;
+
+                   //if (index < 2 ) {
+                    table += `<tr><td><a href="#" onclick="return alert('clicked on the node ${taskName}')">`+taskName+`</a></td></tr>`;  
+                   //}
+                               
+                  });
+
+                  table += "  </tbody>";
+                  table += "</table>";
+
+                   //for edges
+                  //document.getElementById("show_implementation").innerHTML = 'You Clicked on the Edge :: ' + text
+                  document.getElementById("show_implementation").innerHTML = table;
+                  //document.getElementById ("show_implementation").addEventListener ("click", getData, false);
+                      
+                })//getData
+                .catch(error => { 
+                  //console.log(error);
+                  //document.getElementById("show_implementation").innerHTML = "";
+                    if (error.response) {
+                      //console.log(error.response.data);//console.log(error.response.status);//console.log(error.response.headers);
+                      document.getElementById("show_implementation").innerHTML = error.response.data.error;
+
+                    }
+                });//catch
+                
 
                }//else
            
