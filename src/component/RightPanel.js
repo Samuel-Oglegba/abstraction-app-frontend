@@ -37,25 +37,25 @@ export default class RightPanel extends Component {
         let nodes = select("g");
         nodes.selectAll("g").on("click", function(){
    
-            var node = select(this);
+        var node = select(this);
+
+        //console.log(select("svg"));
 
             //ensure the node/edge is not empty
           if(!node.selectAll('text').empty()){
 
               var text = node.selectAll('text').text();
               var id = node.attr('id');
-              var class1 = node.attr('class');
-              var title = node.attr('innerHTML');
+              //var class1 = node.attr('class');              
               var dotElement = id.replace(/^a_/, '');
 
-              //console.log(id);
+              //console.log(title);
               //document.getElementById("show_implementation").innerHTML = 'You Clicked on :: ' + text
-             // this.makeAPICall(text);
-             //for nodes
+              // this.makeAPICall(text);
+              //for nodes
                let nodeUrl = baseUrl()+`/api/v1/operation-task/${text}`;
-               let edgeUrl = baseUrl()+`/api/v1/edge-task/${text}`;
-
-               if(id.includes("node")){
+               
+               if(dotElement.includes("node")){
 
                   getData(nodeUrl)
                   //.then(sleeper(5000))
@@ -92,6 +92,23 @@ export default class RightPanel extends Component {
                   });//catch
                }//if
                else{
+                 //get the title of the edge
+                var title = node.select("title").text();
+                //split the title into respective task
+
+                let edgeName;
+                if(text.includes(":")){
+                  edgeName = text.split(':');
+                  edgeName = edgeName[0].trim();
+                }
+                else{
+                  edgeName = text;
+                }
+
+                let taskArray = title.includes("->") ? title.split('->'): title.split('--');
+
+                let edgeUrl = baseUrl()+`/api/v1/edge-task/${edgeName}/${taskArray[0]}/${taskArray[1]}`;
+                //console.log(edgeUrl)
 
                 getData(edgeUrl)
                 .then(res => {
