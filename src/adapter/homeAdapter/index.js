@@ -2,7 +2,7 @@ import { get, post } from "../xhr";
 
 //this function returns the base url based on the environment
 export function baseUrl(){
-  let appMode = "DEV";
+  let appMode = "TEST";
   
   if(appMode == "DEV"){
     return `http://localhost:8060`;
