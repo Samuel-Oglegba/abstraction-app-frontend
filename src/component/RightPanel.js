@@ -5,7 +5,7 @@ import RightPanelNav from './RightPanelNav';
 import logo from '../logo.svg';
 import '../App.css';
 
-import { getData, baseUrl, sleeper } from "../adapter/homeAdapter";
+import { baseUrl, handleNodeClick, handleEdgeClick } from "../adapter/homeAdapter";
 
 export default class RightPanel extends Component {
     constructor(props){  
@@ -14,18 +14,23 @@ export default class RightPanel extends Component {
       this.state = {
          isLoading: true
        }
+   
     } 
+
 /**
  * handle when the compnents finish loading
  */
   componentDidMount() {
+    //loadingState();
     this.handleGraphInteractivity();
+    this.handleGraphNodeAndEdgeInteractivity();
   }
 /**
 * handle components update
 */
   componentDidUpdate() {
-   this.handleGraphInteractivity()
+   this.handleGraphInteractivity();
+   this.handleGraphNodeAndEdgeInteractivity();
   }
 
   /**
@@ -48,107 +53,34 @@ export default class RightPanel extends Component {
               var id = node.attr('id');
               //var class1 = node.attr('class');              
               var dotElement = id.replace(/^a_/, '');
-
-              //console.log(title);
-              //document.getElementById("show_implementation").innerHTML = 'You Clicked on :: ' + text
-              // this.makeAPICall(text);
-              //for nodes
-               let nodeUrl = baseUrl()+`/api/v1/operation-task/${text}`;
                
                if(dotElement.includes("node")){
 
-                  getData(nodeUrl)
-                  //.then(sleeper(5000))
-                  .then(res => {
-                   // console.log(res);
-                   // console.log(res.data);
+                  //call method to handle node click
+                  handleNodeClick(text);
 
-                    let taskName = res.data[0].task.name;
-                    let operation = "";//res.data.operation.name;
-                    let communication = "";//res.data.communication.variableName;
-
-                    let table = "<br><table class='table table-dark table-bordered '>";
-                    table += `<tr><thead><th colspan='2'>Funcition: ${text}</th></tr></thead>`;
-                    table += "<tr><thead><th>Operation</th><th>Communication</th></tr></thead>";
-                    table += "  <tbody>";
-                    res.data.forEach(function(value, index){
-                     table += `<tr><td>`+value.operation.name+`</td><td><a href="#" onclick="return alert('clicked on the edge ${taskName}')">`+value.communication.variableName+"</a></td></tr>";
-                    });
-                    table += "  </tbody>";
-                    table += "</table>";
-                    
-                    //let displayData = `Function: ${text}</br> Operation: ${operation}</br> Communication: ${communication}`;
-                   // let displayData = `${table}`;
-                    document.getElementById("show_implementation").innerHTML = table;
-                  
-                  })//getData
-                  .catch(error => { 
-                    //console.log(error);
-                    document.getElementById("show_implementation").innerHTML = "";
-                      if (error.response) {
-                        //console.log(error.response.data);//console.log(error.response.status);//console.log(error.response.headers);
-                        document.getElementById("show_implementation").innerHTML = error.response.data.error;
-                      }
-                  });//catch
                }//if
                else{
+
                  //get the title of the edge
-                var title = node.select("title").text();
-                //split the title into respective task
+                  var title = node.select("title").text();
 
-                let edgeName;
-                if(text.includes(":")){
-                  edgeName = text.split(':');
-                  edgeName = edgeName[0].trim();
-                }
-                else{
-                  edgeName = text;
-                }
+                  //split the title into respective task
+                  let edgeName;
+                  if(text.includes(":")){
+                    edgeName = text.split(':');
+                    edgeName = edgeName[0].trim();
+                  }
+                  else{
+                    edgeName = text;
+                  }
 
-                let taskArray = title.includes("->") ? title.split('->'): title.split('--');
+                  let taskArray = title.includes("->") ? title.split('->'): title.split('--');
 
-                let edgeUrl = baseUrl()+`/api/v1/edge-task/${edgeName}/${taskArray[0]}/${taskArray[1]}`;
-                //console.log(edgeUrl)
-
-                getData(edgeUrl)
-                .then(res => {
-                  //console.log(res.data);
-
-                  let table = "<br><table class='table table-dark table-bordered '>";
-                  table += `<tr><thead><th>Edge Name: ${text}</th></tr></thead>`;
-                  table += "<tr><thead><th>Task</th></tr></thead>";
-                  table += "  <tbody>";
-
-                  //TODO: change to the proper code for picking just the two edges involved
-                  
-                  res.data.forEach(function(value, index){
-                   let taskName = value.task.name;
-
-                   //if (index < 2 ) {
-                    table += `<tr><td><a href="#" onclick="return alert('clicked on the node ${taskName}')">`+taskName+`</a></td></tr>`;  
-                   //}
-                               
-                  });
-
-                  table += "  </tbody>";
-                  table += "</table>";
-
-                   //for edges
-                  //document.getElementById("show_implementation").innerHTML = 'You Clicked on the Edge :: ' + text
-                  document.getElementById("show_implementation").innerHTML = table;
-                  //document.getElementById ("show_implementation").addEventListener ("click", getData, false);
-                      
-                })//getData
-                .catch(error => { 
-                  //console.log(error);
-                  //document.getElementById("show_implementation").innerHTML = "";
-                    if (error.response) {
-                      //console.log(error.response.data);//console.log(error.response.status);//console.log(error.response.headers);
-                      document.getElementById("show_implementation").innerHTML = error.response.data.error;
-
-                    }
-                });//catch
+                  let edgeUrl = baseUrl()+`/api/v1/edge-task/${edgeName}/${taskArray[0]}/${taskArray[1]}`;
                 
+                  //call method to handle edge click action
+                  handleEdgeClick(edgeUrl, text);
 
                }//else
            
@@ -162,23 +94,23 @@ export default class RightPanel extends Component {
 
   }//handleGraphInteractivity
 
-  makeAPICall = (taskName) => {
-      //for test purpose
-      try {
-        getData(`http://128.198.162.140:8085/api/v1/operation-task/${taskName}` )
-          .then(res => {
-            //console.log(res);
-            console.log(res.data);
-          })
-          .catch(error => { 
-            console.log(error);
-          });
 
-      } catch (e) {
-        console.log(`Axios request failed: ${e}`);
+  handleGraphNodeAndEdgeInteractivity = () =>{
+
+      var elements = document.getElementsByClassName("nodeClick");
+
+      var myFunction = function() {
+          var attribute = this.getAttribute("data-myattribute");
+          alert(attribute);
+      };
+      
+      for (var i = 0; i < elements.length; i++) {
+          elements[i].addEventListener('click', function(){
+            alert("test")
+          }, false);
       }
 
-  }//makeAPICall
+  }//handleGraphNodeAndEdgeInteractivity
 
   render() {
     const options = {"fit":true, "height":"200px", "zoom":false};
