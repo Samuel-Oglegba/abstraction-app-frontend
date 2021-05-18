@@ -13,7 +13,7 @@ export default class RightPanel extends Component {
         super(props);
 
       this.state = {
-         isLoading: true,
+         isLoading: false,
          showNodeResponse: false,
          showEdgeResponse: false,
          nodeResponse: [],
@@ -58,21 +58,24 @@ export default class RightPanel extends Component {
               //var class1 = node.attr('class');              
               var dotElement = id.replace(/^a_/, '');
                
-               if(dotElement.includes("node")){
+              externalThis.setState({ isLoading: true, showEdgeResponse: false, showNodeResponse: false}); //show loading sign
 
+               if(dotElement.includes("node")){
                   //call method to handle node click
-                handleNodeClick(text)
-                .then(data => {
-                    externalThis.setState({ 
-                      isLoading: false,
-                      showNodeResponse: true,
-                      showEdgeResponse: false,
-                      nodeResponse: data,
-                      nodeName:text
-                    }); 
-                 })
-                 .catch(err => console.log(err));              
-                  //handleNodeClick(text);
+                setTimeout(() => { 
+                  handleNodeClick(text)
+                  .then(data => {
+                      externalThis.setState({ 
+                        isLoading: false,
+                        showNodeResponse: true,
+                        showEdgeResponse: false,
+                        nodeResponse: data,
+                        nodeName:text
+                      }); 
+                   })
+                   .catch(err => console.log(err));   
+                 }, 500);
+                          
 
                }//if
                else{
@@ -94,21 +97,22 @@ export default class RightPanel extends Component {
 
                   let edgeUrl = baseUrl()+`/api/v1/edge-task/${edgeName}/${taskArray[0]}/${taskArray[1]}`;
                 
-                  //call method to handle edge click action
-                 // handleEdgeClick(edgeUrl, text);
-                 handleEdgeClick(edgeUrl, text)
-                 .then(data => {
-                   //console.log(data);
-                     externalThis.setState({ 
-                       isLoading: false,
-                       showNodeResponse: false,
-                       showEdgeResponse: true,
-                       nodeResponse: [],
-                       edgeResponse: data,
-                       edgeName:text
-                     }); 
-                  })
-                  .catch(err => console.log(err));              
+                  //call method to handle edge click action                
+                  setTimeout(() => { 
+                      handleEdgeClick(edgeUrl, text)
+                      .then(data => {
+                        //console.log(data);
+                          externalThis.setState({ 
+                            isLoading: false,
+                            showNodeResponse: false,
+                            showEdgeResponse: true,
+                            nodeResponse: [],
+                            edgeResponse: data,
+                            edgeName:text
+                          }); 
+                      })
+                      .catch(err => console.log(err));  
+                    }, 500);        
 
                }//else
 
@@ -123,7 +127,8 @@ export default class RightPanel extends Component {
 
   /////////////////////// NODE OPERAION /////////////////////
   //this method display node result
-  displayNodeResult(){  
+  displayNodeResult(){
+
     let externalThis = this;
     return <table className='table table-dark table-bordered'>
        <thead>
@@ -168,6 +173,7 @@ export default class RightPanel extends Component {
   ///////////////////// EDGE OPERATION /////////////////////////
     //this method display's edge result
     displayEdgeResult(){  
+
       let externalThis = this;
       return <table className='table table-dark table-bordered'>
         <thead>
@@ -238,7 +244,8 @@ export default class RightPanel extends Component {
                   this.state.showEdgeResponse ?  this.displayEdgeResult()  : ""                
                 }
 
-                { this.state.isLoading ? <img src={logo} className="App-logo" alt="logo" /> : null}
+            {/*     { this.state.isLoading ? <img src={logo} className="App-logo" alt="logo" /> : null} */}
+                { this.state.isLoading ? "Loading..." : null}
             </div>
                     
         </div>

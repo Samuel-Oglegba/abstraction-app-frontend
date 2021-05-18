@@ -30,10 +30,11 @@ code {
 
 /* right panel buttom */
 .rightPanelButtom {
-  height: 200px;
+  height: 280px;
   width: 100%;
   color: aliceblue;
-  background: rgb(15, 0, 0);
+ /*  background: rgb(15, 0, 0); */
+ overflow: auto;
 }
 
 .outerContainer{
