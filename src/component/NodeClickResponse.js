@@ -5,14 +5,21 @@ class NodeClickResponse extends Component {
     super(props);  
     }  
       
+    //handle edge click action
 handleEdgeClick = (edgeName, task1, task2) => {
     this.props.handleEdgeClick(edgeName,task1,task2);
-  };
+  };//handleEdgeClick
+
+  //handle node click action
+  handNodeClick = (taskName) => {
+    this.props.handleNodeClick(taskName);
+  };//handNodeClick
 
   render() {  
-      let edgeName = this.props.obj.communication.variableName;
-      let task1 = this.props.obj.task.name;
-      let task2 = this.props.obj.task2.name;
+      let data = this.props.obj;
+      let edgeName = data.communication.variableName;
+      let task1 = data.task.name;
+      let task2 = data.task2.name;
       const connector = "->";
 
     return (         
@@ -23,10 +30,12 @@ handleEdgeClick = (edgeName, task1, task2) => {
                 </a>
             </td>
             <td>
-                {task1} {connector} {task2}
+                <a href="#" onClick={() => this.handNodeClick(task1)} > {task1} </a> 
+                {connector} 
+                <a href="#" onClick={() => this.handNodeClick(task2)} >{task2} </a>
             </td>
             <td>
-                {this.props.obj.operation.name}
+                 {data.abstractType.name} 
             </td>           
         </tr>
     );  

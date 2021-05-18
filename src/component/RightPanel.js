@@ -58,7 +58,8 @@ export default class RightPanel extends Component {
               //var class1 = node.attr('class');              
               var dotElement = id.replace(/^a_/, '');
                
-              externalThis.setState({ isLoading: true, showEdgeResponse: false, showNodeResponse: false}); //show loading sign
+              //show loading sign
+              externalThis.setState({ isLoading: true, showEdgeResponse: false, showNodeResponse: false}); 
 
                if(dotElement.includes("node")){
                   //call method to handle node click
@@ -135,13 +136,15 @@ export default class RightPanel extends Component {
         <tr><th colSpan='3'><h4>{externalThis.state.nodeName} <small>(function name)</small></h4></th></tr>
         <tr>
             <th>Communication</th>
-            <th>Link</th>
-            <th>Operation</th>
+            <th>Task Link</th>
+            <th>Abstract Type</th>
         </tr>
       </thead>
       <tbody>
         {  externalThis.state.nodeResponse.map(function(object, i){  
-            return <NodeClickResponse handleEdgeClick = {(edgeName,task1, task2) => externalThis.runEdgeClickAction(edgeName,task1,task2)} obj={object} index={i} />;  
+            return <NodeClickResponse handleEdgeClick = {(edgeName,task1, task2) => externalThis.runEdgeClickAction(edgeName,task1,task2)} 
+            handleNodeClick = {(nodeName) => externalThis.runNodeClickAction(nodeName)}
+            obj={object} index={i} />;  
           })
         }
       </tbody>
@@ -153,6 +156,11 @@ export default class RightPanel extends Component {
   runEdgeClickAction = (edgeName,task1,task2) =>{
         let edgeUrl = baseUrl()+`/api/v1/edge-task/${edgeName}/${task1}/${task2}`;
         let externalThis = this;
+
+        //show loading sign
+        externalThis.setState({ isLoading: true, showEdgeResponse: false, showNodeResponse: false}); 
+
+      setTimeout(() => { 
         handleEdgeClick(edgeUrl, edgeName)
         .then(data => {
             externalThis.setState({ 
@@ -164,7 +172,8 @@ export default class RightPanel extends Component {
               edgeName:edgeName
             }); 
         })
-        .catch(err => console.log(err));  
+        .catch(err => console.log(err)); 
+      }, 500);   
   }//runEdgeClickAction
 
   /////////////////////// END NODE OPERATION///////////////////////////
@@ -201,6 +210,10 @@ export default class RightPanel extends Component {
      runNodeClickAction = (nodeName) =>{
           // console.log("you clicke on an edge " +nodeName);
           let externalThis = this;
+          //show loading sign
+          externalThis.setState({ isLoading: true, showEdgeResponse: false, showNodeResponse: false}); 
+          
+        setTimeout(() => { 
           handleNodeClick(nodeName)
           .then(data => {
               externalThis.setState({ 
@@ -213,6 +226,8 @@ export default class RightPanel extends Component {
               }); 
           })
           .catch(err => console.log(err)); 
+        }, 500);   
+
     }//runNodeClickAction
 
 
@@ -234,6 +249,8 @@ export default class RightPanel extends Component {
             <div className="rightPanelButtom table-dark" id="show_implementation">
                 {/*      {this.props.implementation_details} */}
 
+                { this.state.isLoading ? "Loading..." : null}
+                
                 {/*  for node respons */}
                 {
                   this.state.showNodeResponse ?  this.displayNodeResult()  : ""                
@@ -244,8 +261,8 @@ export default class RightPanel extends Component {
                   this.state.showEdgeResponse ?  this.displayEdgeResult()  : ""                
                 }
 
-            {/*     { this.state.isLoading ? <img src={logo} className="App-logo" alt="logo" /> : null} */}
-                { this.state.isLoading ? "Loading..." : null}
+               {/*     { this.state.isLoading ? <img src={logo} className="App-logo" alt="logo" /> : null} */}
+               
             </div>
                     
         </div>

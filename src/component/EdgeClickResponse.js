@@ -17,7 +17,7 @@ handNodeClick = (taskName) => {
               {this.props.index + 1}
             </td>
             <td>
-              <a href="#" onClick={() => this.handNodeClick(taskName)}>{taskName}</a>
+              <a href="#" onClick={() => this.handNodeClick(taskName)} > {taskName}</a>
           </td>
         </tr>
     );  

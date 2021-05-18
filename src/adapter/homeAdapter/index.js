@@ -18,7 +18,7 @@ export function baseUrl(){
 
 //this function calls the get method
 export function getData(url){
-  return get(url);
+  return    get(url);   
 }//getData
   
 //this method calls the post method
@@ -30,7 +30,9 @@ export function setData(url,requestData){
 export function handleNodeClick (text){
 
    let nodeUrl = baseUrl()+`/api/v1/operation-task/${text}`;
-   const theRes = getData(nodeUrl)
+   const theRes = 
+  
+   getData(nodeUrl)
     //.then(sleeper(5000))
     .then(res => {
       return res.data;    
