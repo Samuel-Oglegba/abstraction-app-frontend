@@ -30,81 +30,39 @@ export function setData(url,requestData){
 export function handleNodeClick (text){
 
    let nodeUrl = baseUrl()+`/api/v1/operation-task/${text}`;
-
-    getData(nodeUrl)
+   const theRes = getData(nodeUrl)
     //.then(sleeper(5000))
     .then(res => {
-    // console.log(res);
-    // console.log(res.data);
-
-      let taskName = res.data[0].task.name;
-      let operation = "";//res.data.operation.name;
-      let communication = "";//res.data.communication.variableName;
-
-      let table = "<br><table class='table table-dark table-bordered '>";
-      table += `<tr><thead><th colspan='2'>Funcition: ${text}</th></tr></thead>`;
-      table += "<tr><thead><th>Operation</th><th>Communication</th></tr></thead>";
-      table += "  <tbody>";
-      res.data.forEach(function(value, index){
-      table += `<tr><td>`+value.operation.name+`</td><td><a href="#" onclick="return alert('clicked on the edge ${taskName}')">`+value.communication.variableName+"</a></td></tr>";
-      });
-      table += "  </tbody>";
-      table += "</table>";
-      
-      //let displayData = `Function: ${text}</br> Operation: ${operation}</br> Communication: ${communication}`;
-    // let displayData = `${table}`;
-      document.getElementById("show_implementation").innerHTML = table;
-    
+      return res.data;    
     })//getData
     .catch(error => { 
-      //console.log(error);
-      document.getElementById("show_implementation").innerHTML = "";
+      //document.getElementById("show_implementation").innerHTML = "";
         if (error.response) {
-          //console.log(error.response.data);//console.log(error.response.status);//console.log(error.response.headers);
-          document.getElementById("show_implementation").innerHTML = error.response.data.error;
+          return error.response.data.error;
         }
     });//catch
+
+    return theRes;
 
 }//handleNodeClick
 
 //this method handles edge click action
 export function handleEdgeClick (edgeUrl, text){
 
-      getData(edgeUrl)
+    const theRes =  getData(edgeUrl)
       .then(res => {
-        //console.log(res.data);
-
-        let table = "<br><table class='table table-dark table-bordered '>";
-        table += `<tr><thead><th>Edge Name: ${text}</th></tr></thead>`;
-        table += "<tr><thead><th>Task</th></tr></thead>";
-        table += "  <tbody>";
-
-        //TODO: change to the proper code for picking just the two edges involved
-        
-        res.data.forEach(function(value, index){
-         let taskName = value.task.name;
-
-          table += `<tr><td><a href="#" onClick={handleNodeClick('${taskName}').bind(this)}>${taskName}</a></td></tr>`;  
-         // table += `<tr><td><a href="#" class='nodeClick'>${taskName}</a></td></tr>`;  
-       
-                     
-        });
-
-        table += "  </tbody>";
-        table += "</table>";
-
-        document.getElementById("show_implementation").innerHTML = table;
-
+        return res.data;
       })//getData
       .catch(error => { 
           if (error.response) {
-            //console.log(error.response.data);//console.log(error.response.status);//console.log(error.response.headers);
-            document.getElementById("show_implementation").innerHTML = error.response.data.error;
-
+            return error.response.data.error;
           }
       });//catch
 
+      return theRes;
+
 }//handleEdgeClick
+
 
 export function sleeper (ms){
     return function(x) {

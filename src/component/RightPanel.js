@@ -2,9 +2,10 @@ import React, { useState, useEffect, Component } from "react";
 import { Graphviz } from 'graphviz-react';
 import { select } from 'd3-selection'
 import RightPanelNav from './RightPanelNav';
+import NodeClickResponse from './NodeClickResponse';  
+import EdgeClickResponse from './EdgeClickResponse';  
 import logo from '../logo.svg';
 import '../App.css';
-
 import { baseUrl, handleNodeClick, handleEdgeClick } from "../adapter/homeAdapter";
 
 export default class RightPanel extends Component {
@@ -12,9 +13,15 @@ export default class RightPanel extends Component {
         super(props);
 
       this.state = {
-         isLoading: true
+         isLoading: true,
+         showNodeResponse: false,
+         showEdgeResponse: false,
+         nodeResponse: [],
+         nodeName:"",
+         edgeResponse: [],
+         edgeName: ""
        }
-   
+       //this.handleGraphInteractivity = this.handleGraphInteractivity.bind(this);   
     } 
 
 /**
@@ -23,29 +30,26 @@ export default class RightPanel extends Component {
   componentDidMount() {
     //loadingState();
     this.handleGraphInteractivity();
-    this.handleGraphNodeAndEdgeInteractivity();
   }
 /**
 * handle components update
 */
   componentDidUpdate() {
    this.handleGraphInteractivity();
-   this.handleGraphNodeAndEdgeInteractivity();
   }
 
   /**
    * handle graph click
    */
-
   handleGraphInteractivity = () =>{
+        //get the component state
+        let externalThis = this;
 
         let nodes = select("g");
         nodes.selectAll("g").on("click", function(){
-   
         var node = select(this);
-
+         
         //console.log(select("svg"));
-
             //ensure the node/edge is not empty
           if(!node.selectAll('text').empty()){
 
@@ -57,7 +61,18 @@ export default class RightPanel extends Component {
                if(dotElement.includes("node")){
 
                   //call method to handle node click
-                  handleNodeClick(text);
+                handleNodeClick(text)
+                .then(data => {
+                    externalThis.setState({ 
+                      isLoading: false,
+                      showNodeResponse: true,
+                      showEdgeResponse: false,
+                      nodeResponse: data,
+                      nodeName:text
+                    }); 
+                 })
+                 .catch(err => console.log(err));              
+                  //handleNodeClick(text);
 
                }//if
                else{
@@ -80,37 +95,122 @@ export default class RightPanel extends Component {
                   let edgeUrl = baseUrl()+`/api/v1/edge-task/${edgeName}/${taskArray[0]}/${taskArray[1]}`;
                 
                   //call method to handle edge click action
-                  handleEdgeClick(edgeUrl, text);
+                 // handleEdgeClick(edgeUrl, text);
+                 handleEdgeClick(edgeUrl, text)
+                 .then(data => {
+                   //console.log(data);
+                     externalThis.setState({ 
+                       isLoading: false,
+                       showNodeResponse: false,
+                       showEdgeResponse: true,
+                       nodeResponse: [],
+                       edgeResponse: data,
+                       edgeName:text
+                     }); 
+                  })
+                  .catch(err => console.log(err));              
 
                }//else
-           
+
           }
           else{
             document.getElementById("show_implementation").innerHTML = 'The edge/node is empty'
-          }//else
-       
+          }//else       
       
       });
 
   }//handleGraphInteractivity
 
+  /////////////////////// NODE OPERAION /////////////////////
+  //this method display node result
+  displayNodeResult(){  
+    let externalThis = this;
+    return <table className='table table-dark table-bordered'>
+       <thead>
+        <tr><th colSpan='3'><h4>{externalThis.state.nodeName} <small>(function name)</small></h4></th></tr>
+        <tr>
+            <th>Communication</th>
+            <th>Link</th>
+            <th>Operation</th>
+        </tr>
+      </thead>
+      <tbody>
+        {  externalThis.state.nodeResponse.map(function(object, i){  
+            return <NodeClickResponse handleEdgeClick = {(edgeName,task1, task2) => externalThis.runEdgeClickAction(edgeName,task1,task2)} obj={object} index={i} />;  
+          })
+        }
+      </tbody>
+    </table>
+     
+  }//displayNodeResult
 
-  handleGraphNodeAndEdgeInteractivity = () =>{
+  //handle when an edge is clicked from the node result
+  runEdgeClickAction = (edgeName,task1,task2) =>{
+        let edgeUrl = baseUrl()+`/api/v1/edge-task/${edgeName}/${task1}/${task2}`;
+        let externalThis = this;
+        handleEdgeClick(edgeUrl, edgeName)
+        .then(data => {
+            externalThis.setState({ 
+              isLoading: false,
+              showNodeResponse: false,
+              showEdgeResponse: true,
+              nodeResponse: [],
+              edgeResponse: data,
+              edgeName:edgeName
+            }); 
+        })
+        .catch(err => console.log(err));  
+  }//runEdgeClickAction
 
-      var elements = document.getElementsByClassName("nodeClick");
+  /////////////////////// END NODE OPERATION///////////////////////////
 
-      var myFunction = function() {
-          var attribute = this.getAttribute("data-myattribute");
-          alert(attribute);
-      };
+
+  ///////////////////// EDGE OPERATION /////////////////////////
+    //this method display's edge result
+    displayEdgeResult(){  
+      let externalThis = this;
+      return <table className='table table-dark table-bordered'>
+        <thead>
+           <tr>
+              <th colSpan="2">
+                  <h4> {externalThis.state.edgeName} <small>(Edge Name)</small></h4>
+              </th>
+            </tr>
+          <tr>
+              <th>#</th>
+              <th>Task Connected</th>
+          </tr>
+        </thead>
+        <tbody>
+          {  externalThis.state.edgeResponse.map(function(object, i){  
+              return <EdgeClickResponse handleNodeClick = {(nodeName) => externalThis.runNodeClickAction(nodeName)} obj={object} index={i} />;  
+            })
+          }
+        </tbody>
+      </table>
       
-      for (var i = 0; i < elements.length; i++) {
-          elements[i].addEventListener('click', function(){
-            alert("test")
-          }, false);
-      }
+    }//displayNodeResult
 
-  }//handleGraphNodeAndEdgeInteractivity
+     //handle when a node is clicked from the edge result
+     runNodeClickAction = (nodeName) =>{
+          // console.log("you clicke on an edge " +nodeName);
+          let externalThis = this;
+          handleNodeClick(nodeName)
+          .then(data => {
+              externalThis.setState({ 
+                isLoading: false,
+                showNodeResponse: true,
+                showEdgeResponse: false,
+                nodeResponse: data,
+                edgeResponse: [],
+                nodeName:nodeName
+              }); 
+          })
+          .catch(err => console.log(err)); 
+    }//runNodeClickAction
+
+
+ ///////////////////// END EDGE OPERATION ////////////////////
 
   render() {
     const options = {"fit":true, "height":"200px", "zoom":false};
@@ -125,8 +225,19 @@ export default class RightPanel extends Component {
             </div>
 
             <h4>Implementation Details</h4>
-            <div className="rightPanelButtom" id="show_implementation">
-                {this.props.implementation_details}
+            <div className="rightPanelButtom table-dark" id="show_implementation">
+                {/*      {this.props.implementation_details} */}
+
+                {/*  for node respons */}
+                {
+                  this.state.showNodeResponse ?  this.displayNodeResult()  : ""                
+                }
+
+                 {/*  for edge respons */}
+                 {
+                  this.state.showEdgeResponse ?  this.displayEdgeResult()  : ""                
+                }
+
                 { this.state.isLoading ? <img src={logo} className="App-logo" alt="logo" /> : null}
             </div>
                     
