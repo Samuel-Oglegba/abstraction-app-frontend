@@ -133,7 +133,13 @@ export default class RightPanel extends Component {
     let externalThis = this;
     return <table className='table table-dark table-bordered'>
        <thead>
-        <tr><th colSpan='3'><h4>{externalThis.state.nodeName} <small>(function name)</small></h4></th></tr>
+        <tr>
+            <th colSpan='3'>
+                <h4>
+                    {externalThis.state.nodeName} <small>(function name)</small>
+                </h4>
+            </th>
+        </tr>
         <tr>
             <th>Communication</th>
             <th>Task Link</th>
@@ -234,7 +240,7 @@ export default class RightPanel extends Component {
  ///////////////////// END EDGE OPERATION ////////////////////
 
   render() {
-    const options = {"fit":true, "height":"200px", "zoom":false};
+    const options = { "fit":false, scale:1, "height":"200px", width: null, "zoom":false, "zoomScaleExtent":[0,1,10] };
 
     return (
         <div className="col-sm-8">
