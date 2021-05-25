@@ -1,11 +1,14 @@
-#Running the GUI on Docker
-Step 1-
-docker build -t abstraction-webapp .
-Step 2 -
-docker run -d -it -p 3000:3000/tcp --name abstraction-webapp abstraction-webapp
-Step 3- Access app on
-http://localhost:3000                                               --local host
-http://128.198.162.140:3000/                                  --when connected to vpn
+#**Running the GUI on Docker** .\
+
+Step 1- .\
+docker build -t abstraction-webapp . .\
+
+Step 2 - .\
+docker run -d -it -p 3000:3000/tcp --name abstraction-webapp abstraction-webapp .\
+
+Step 3- Access app on .\
+http://localhost:3000                                               --local host .\
+http://128.198.162.140:3000/                                  --when connected to vpn .\
 
 
 # Getting Started with Create React App
