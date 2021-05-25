@@ -1,7 +1,7 @@
-#**Running the GUI on Docker** .\
+#**Running the GUI on Docker** 
 
 Step 1- .\
-docker build -t abstraction-webapp . .\
+docker build -t abstraction-webapp . 
 
 Step 2 - .\
 docker run -d -it -p 3000:3000/tcp --name abstraction-webapp abstraction-webapp .\
