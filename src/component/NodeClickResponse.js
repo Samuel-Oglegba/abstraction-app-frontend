@@ -15,11 +15,16 @@ handleEdgeClick = (edgeName, task1, task2) => {
     this.props.handleNodeClick(taskName);
   };//handNodeClick
 
+  handleAbstractTypeClick = (operation) => {
+    alert("Abstract-Type-Operation::" + operation);
+  };//handleAbstractTypeClick
+
   render() {  
       let data = this.props.obj;
       let edgeName = data.communication.variableName;
       let task1 = data.task.name;
       let task2 = data.task2.name;
+      let operation = data.operation.name;
       const connector = "->";
 
     return (         
@@ -35,7 +40,7 @@ handleEdgeClick = (edgeName, task1, task2) => {
                 <a href="#" onClick={() => this.handNodeClick(task2)} >{task2} </a>
             </td>
             <td>
-                 {data.abstractType.name} 
+                <a href="#" onClick={() => this.handleAbstractTypeClick(operation)} > {data.abstractType.name} </a>
             </td>           
         </tr>
     );  
