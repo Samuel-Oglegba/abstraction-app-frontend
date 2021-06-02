@@ -147,11 +147,11 @@ export default class RightPanel extends Component {
         </tr>
       </thead>
       <tbody>
-        {  externalThis.state.nodeResponse.map(function(object, i){  
-            return <NodeClickResponse handleEdgeClick = {(edgeName,task1, task2) => externalThis.runEdgeClickAction(edgeName,task1,task2)} 
+        {  externalThis.state.nodeResponse ? externalThis.state.nodeResponse.map(function(object, i){  
+            return <NodeClickResponse key={i} handleEdgeClick = {(edgeName,task1, task2) => externalThis.runEdgeClickAction(edgeName,task1,task2)} 
             handleNodeClick = {(nodeName) => externalThis.runNodeClickAction(nodeName)}
             obj={object} index={i} />;  
-          })
+          }) : "Something went south..."
         }
       </tbody>
     </table>
@@ -203,9 +203,9 @@ export default class RightPanel extends Component {
           </tr>
         </thead>
         <tbody>
-          {  externalThis.state.edgeResponse.map(function(object, i){  
-              return <EdgeClickResponse handleNodeClick = {(nodeName) => externalThis.runNodeClickAction(nodeName)} obj={object} index={i} />;  
-            })
+          {  externalThis.state.edgeResponse ? externalThis.state.edgeResponse.map(function(object, i){  
+              return <EdgeClickResponse key={i} handleNodeClick = {(nodeName) => externalThis.runNodeClickAction(nodeName)} obj={object} index={i} />;  
+            }) : "Something went south..."
           }
         </tbody>
       </table>
