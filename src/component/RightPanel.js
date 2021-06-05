@@ -267,7 +267,7 @@ export default class RightPanel extends Component {
                   this.state.showEdgeResponse ?  this.displayEdgeResult()  : ""                
                 }
 
-               {/*     { this.state.isLoading ? <img src={logo} className="App-logo" alt="logo" /> : null} */}
+               {/* { this.state.isLoading ? <img src={logo} className="App-logo" alt="logo" /> : null} */}
                
             </div>
                     
