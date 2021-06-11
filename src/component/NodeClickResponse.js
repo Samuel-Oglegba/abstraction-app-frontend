@@ -16,7 +16,8 @@ handleEdgeClick = (edgeName, task1, task2) => {
   };//handNodeClick
 
   handleAbstractTypeClick = (operation) => {
-    alert("Abstract-Type-Operation::" + operation);
+    let operation_reverse = operation == "POP" ? "PUSH" : "POP";
+    alert("Abstract-Type-Operation:: " + operation + " -> " + operation_reverse );
   };//handleAbstractTypeClick
 
   render() {  

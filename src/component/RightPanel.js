@@ -9,9 +9,8 @@ import '../App.css';
 import { baseUrl, handleNodeClick, handleEdgeClick } from "../adapter/homeAdapter";
 
 export default class RightPanel extends Component {
-    constructor(props){  
-        super(props);
-
+   constructor(props){  
+      super(props);
       this.state = {
          isLoading: false,
          showNodeResponse: false,
@@ -30,13 +29,17 @@ export default class RightPanel extends Component {
   componentDidMount() {
     //loadingState();
     this.handleGraphInteractivity();
-  }
+  }//componentDidMount
 /**
 * handle components update
 */
   componentDidUpdate() {
-   this.handleGraphInteractivity();
-  }
+    this.handleGraphInteractivity();
+  }//componentDidUpdate
+
+  showImplementationDetails = () => {
+    this.props.showImplementationDetails();
+  };
 
   /**
    * handle graph click
@@ -49,7 +52,6 @@ export default class RightPanel extends Component {
         nodes.selectAll("g").on("click", function(){
         var node = select(this);
          
-        //console.log(select("svg"));
             //ensure the node/edge is not empty
           if(!node.selectAll('text').empty()){
 
@@ -73,17 +75,16 @@ export default class RightPanel extends Component {
                         nodeResponse: data,
                         nodeName:text
                       }); 
+                      //show the implementation detail
+                      externalThis.showImplementationDetails();
                    })
                    .catch(err => console.log(err));   
                  }, 500);
                           
-
                }//if
                else{
-
                  //get the title of the edge
                   var title = node.select("title").text();
-
                   //split the title into respective task
                   let edgeName;
                   if(text.includes(":")){
@@ -93,7 +94,6 @@ export default class RightPanel extends Component {
                   else{
                     edgeName = text;
                   }
-
                   let taskArray = title.includes("->") ? title.split('->'): title.split('--');
 
                   let edgeUrl = baseUrl()+`/api/v1/edge-task/${edgeName}/${taskArray[0]}/${taskArray[1]}`;
@@ -111,6 +111,8 @@ export default class RightPanel extends Component {
                             edgeResponse: data,
                             edgeName:text
                           }); 
+                           //show the implementation detail
+                           externalThis.showImplementationDetails();
                       })
                       .catch(err => console.log(err));  
                     }, 500);        
@@ -177,6 +179,8 @@ export default class RightPanel extends Component {
               edgeResponse: data,
               edgeName:edgeName
             }); 
+             //show the implementation detail
+             externalThis.showImplementationDetails();
         })
         .catch(err => console.log(err)); 
       }, 500);   
@@ -230,17 +234,19 @@ export default class RightPanel extends Component {
                 edgeResponse: [],
                 nodeName:nodeName
               }); 
+               //show the implementation detail
+               externalThis.showImplementationDetails();
           })
           .catch(err => console.log(err)); 
         }, 500);   
 
     }//runNodeClickAction
 
-
  ///////////////////// END EDGE OPERATION ////////////////////
-
   render() {
     const options = { "fit":false, scale:1, "height":"200px", width: null, "zoom":false, "zoomScaleExtent":[0,1,10] };
+    let show_implementation_detail = this.props.show_implementation_details;
+    let show_task_graph = this.props.show_task_graph;
 
     return (
         <div className="col-sm-8">
@@ -248,24 +254,26 @@ export default class RightPanel extends Component {
           <RightPanelNav />
 
              <div className="rightPanelTop" align="center">
-               <object id = "display_graph"> <Graphviz options={options} dot={this.props.dot_language} /> </object>        
+               {
+                show_task_graph?<object id = "display_graph"> <Graphviz options={options} dot={this.props.source_of_graph} /></object>: ""
+
+                }
             </div>
 
             <h4>Implementation Details</h4>
             <div className="rightPanelButtom table-dark" id="show_implementation">
-                {/*      {this.props.implementation_details} */}
 
                 { this.state.isLoading ? "Loading..." : null}
                 
                 {/*  for node respons */}
                 {
-                  this.state.showNodeResponse ?  this.displayNodeResult()  : ""                
+                  this.state.showNodeResponse && show_implementation_detail ?  this.displayNodeResult()  : ""                
                 }
 
                  {/*  for edge respons */}
                  {
-                  this.state.showEdgeResponse ?  this.displayEdgeResult()  : ""                
-                }
+                  this.state.showEdgeResponse && show_implementation_detail ?  this.displayEdgeResult()  : ""                
+                 }
 
                {/* { this.state.isLoading ? <img src={logo} className="App-logo" alt="logo" /> : null} */}
                
@@ -274,4 +282,5 @@ export default class RightPanel extends Component {
         </div>
     );
   }
+
 }
