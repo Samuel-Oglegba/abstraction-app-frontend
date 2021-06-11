@@ -11,7 +11,7 @@ export default class LeftPanel extends Component {
    */
   runGraphClick = () => {
     this.props.handleRunGraphClick();
-  };
+  };//runGraphClick
 
   /**
    * handle the clear button click
@@ -19,14 +19,21 @@ export default class LeftPanel extends Component {
    */
   clearButtonClick = () => {
     this.props.handleClearButtonClick();
-  };
+  };//clearButtonClick
 
+  /**
+   * this method handles the delete button click
+   */
+  deleteButtonClick = () => {
+    this.props.handleDeleteButtonClick();
+  };//deleteButtonClick
+  
   /**
    * handles when the text input changes for the dot language
    * @param {*} event 
    */
-  dotLanguageChange = (event) => {
-    this.props.handleDotLanguageChange(event);
+   userInputChanged = (event) => {
+    this.props.handleUserInputChange(event);
   };
 
   render() {
@@ -34,9 +41,12 @@ export default class LeftPanel extends Component {
         <div className="col-sm-4">
         <h2>Dot Language</h2>
           <LeftPanelNav  handleRunGraphClick = {() => this.runGraphClick()} 
-          handleClearButtonClick = {() => this.clearButtonClick()}  />
+          handleClearButtonClick = {() => this.clearButtonClick()} 
+          handleDeleteButtonClick = {() => this.deleteButtonClick()} 
+           />
 
-          <textarea className="letPanel" name="dot_language_input" id="dot_language_input" onChange={this.dotLanguageChange} value={this.props.dot_language_input} ></textarea>      
+          <textarea className="letPanel" name="user_input_graph" id="user_input_graph" 
+          onChange={this.userInputChanged} value={this.props.user_input_graph} ></textarea>      
       
       </div>
     );

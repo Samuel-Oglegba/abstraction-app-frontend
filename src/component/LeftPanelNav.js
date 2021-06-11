@@ -10,15 +10,21 @@ export default class LeftPanelNav extends Component {
    */
   runGraphClick = () => {
     this.props.handleRunGraphClick();
-  };
+  };//runGraphClick
 
   /**
    * handles when the clear button is clicked on
    */
   runClearGraphClick = () => {
     this.props.handleClearButtonClick();
-  };
+  };//runClearGraphClick
 
+  /**
+   * handle when the delete button is clicked on
+   */
+  runDeleteGraphClick = () => {
+    this.props.handleDeleteButtonClick();
+  };//runDeleteGraphClick
 
   render() {
     return (
@@ -44,7 +50,7 @@ export default class LeftPanelNav extends Component {
                       <a className="nav-link" id="run_graph" onClick={() => this.runGraphClick()} href="#" title="Run Dot Input"><span className="fa fa-play"></span></a>
                   </li>
                   <li className="nav-item pull-right">
-                    <a className="nav-link" id="delete_input" href="#"><span className="fa fa-trash" title="Delete All results"></span></a>
+                    <a className="nav-link" id="delete_input" onClick={() => this.runDeleteGraphClick()} href="#"><span className="fa fa-trash" title="Delete All results"></span></a>
                   </li>
             </ul>
         </nav>
