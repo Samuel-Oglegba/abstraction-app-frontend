@@ -23,7 +23,7 @@ class App extends Component {
       show_implementation_details: false,
     }//state
 
-  } //constructor
+  }//constructor
 
     /**
      * this function returns the default graph input for the dedup application
