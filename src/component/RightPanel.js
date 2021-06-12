@@ -257,7 +257,7 @@ export default class RightPanel extends Component {
 
              <div className="rightPanelTop" align="center">
                {
-                show_task_graph?<object id = "display_graph"> <Graphviz options={options} dot={this.props.source_of_graph} /></object>: ""
+                show_task_graph?<object id = "display_graph"> <Graphviz options={options} dot={this.props.processed_input} /></object>: ""
 
                 }
             </div>
