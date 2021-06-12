@@ -4,13 +4,15 @@ import { select } from 'd3-selection'
 import RightPanelNav from './RightPanelNav';
 import NodeClickResponse from './NodeClickResponse';  
 import EdgeClickResponse from './EdgeClickResponse';  
-import logo from '../logo.svg';
 import '../App.css';
 import { baseUrl, handleNodeClick, handleEdgeClick } from "../adapter/homeAdapter";
 
 export default class RightPanel extends Component {
+
    constructor(props){  
       super(props);
+
+      //set the initial state
       this.state = {
          isLoading: false,
          showNodeResponse: false,

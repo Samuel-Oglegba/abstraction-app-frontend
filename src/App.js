@@ -1,24 +1,28 @@
 import React, { useEffect, useState, Component } from "react";
+//this panel holds the graph source (user input)
 import LeftPanel from './component/LeftPanel';
+//this pannel holds the task graph and the implementation details
 import RightPanel from './component/RightPanel';
 
 class App extends Component {
 
   constructor(props){  
     //TODO: add a file to show how things work on the high level
+    super(props); 
 
-    super(props);  
     //set the initial state  
     this.state = {
       //the pannel input is for saving the user's source of the graph being navigated
       user_input_graph: this.defualt_input(),
       //the state of the graph being navigated --(updated when the user runs any input change)
       source_of_graph: this.defualt_input(),
-      //the task graph is from the user input - the task graph can be cleared either by the clear or delete button
+      //the task graph is from the user input - 
+      //the task graph can be cleared either by the clear or delete button
       show_task_graph: true,
       //the implementation detail is for the data retrived value when edge or task is clicked
       show_implementation_details: false,
     }//state
+
   } //constructor
 
     /**
@@ -36,7 +40,7 @@ class App extends Component {
     }//defualt_input
 
    /**
-   * this method handles user graph source changes
+   * this function handles user graph source changes
    */
   handleUserInputChange = (event) =>{
     this.setState({
@@ -45,7 +49,7 @@ class App extends Component {
   }//handleUserInputChange
   
   /**
-   * this method runs the user input to display the task graph
+   * this function runs the user input to display the task graph
    */
   handleRunGraphClick() {
     //TODO:: check the graph syntax
@@ -60,7 +64,7 @@ class App extends Component {
   }//handleRunGraphClick
 
   /**
-   * this method resets the source graph input back to the defualt
+   * this function resets the source graph input back to the defualt - clear btn clicked
    */
   handleClearButtonClick(){
       this.setState({
@@ -72,7 +76,7 @@ class App extends Component {
   }//handleClearButtonClick
 
   /**
-   * this method handles when a user clicks on the delete button
+   * this function removes all inputs and results from the interface - delete btn clicke
    */
   handleDeleteButtonClick(){
     this.setState({
@@ -83,14 +87,9 @@ class App extends Component {
     })
 }//handleDeleteButtonClick
 
- /*  hideImplementationDetails(){
-    this.setState({
-    show_implementation_details: false,
-  })
- }//hideImplementationDetails
- */
-
- //allows the implementation details to be displayed to the user after clicking on an edge or node
+ /**
+  * this function allows the implementation details to be displayed to the user after clicking on an edge or node
+  */
  showImplementationDetails(){
   this.setState({
     show_implementation_details: true,
