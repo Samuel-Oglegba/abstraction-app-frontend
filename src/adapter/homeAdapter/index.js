@@ -1,4 +1,4 @@
-import { get, post } from "../xhr";
+import { get, post } from "../utils";
 
 //this function returns the base url based on the environment
 export function baseUrl(){

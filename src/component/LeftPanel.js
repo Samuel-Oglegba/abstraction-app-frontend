@@ -45,8 +45,8 @@ export default class LeftPanel extends Component {
           handleDeleteButtonClick = {() => this.deleteButtonClick()} 
            />
 
-          <textarea className="letPanel" name="user_input_graph" id="user_input_graph" 
-          onChange={this.userInputChanged} value={this.props.user_input_graph} ></textarea>      
+          <textarea className="letPanel" name="unprocessed_input" id="unprocessed_input" 
+          onChange={this.userInputChanged} value={this.props.unprocessed_input} ></textarea>      
       
       </div>
     );

@@ -13,9 +13,9 @@ class App extends Component {
     //set the initial state  
     this.state = {
       //the pannel input is for saving the user's source of the graph being navigated
-      user_input_graph: this.defualt_input(),
+      unprocessed_input: this.defualt_input(),
       //the state of the graph being navigated --(updated when the user runs any input change)
-      source_of_graph: this.defualt_input(),
+      processed_input: this.defualt_input(),
       //the task graph is from the user input - 
       //the task graph can be cleared either by the clear or delete button
       show_task_graph: true,
@@ -44,7 +44,7 @@ class App extends Component {
    */
   handleUserInputChange = (event) =>{
     this.setState({
-      user_input_graph: event.target.value
+      unprocessed_input: event.target.value
      }) 
   }//handleUserInputChange
   
@@ -54,9 +54,9 @@ class App extends Component {
   handleRunGraphClick() {
     //TODO:: check the graph syntax
     //-- ensure that the value of the input is set
-    if(this.state.user_input_graph){
+    if(this.state.unprocessed_input){
       this.setState({
-        source_of_graph: this.state.user_input_graph,
+        processed_input: this.state.unprocessed_input,
         show_task_graph: true,
        })  
     }//if
@@ -68,8 +68,8 @@ class App extends Component {
    */
   handleClearButtonClick(){
       this.setState({
-      user_input_graph: this.defualt_input(),
-      source_of_graph: this.defualt_input(),
+      unprocessed_input: this.defualt_input(),
+      processed_input: this.defualt_input(),
       show_task_graph: false,
       show_implementation_details: false,
     })
@@ -80,8 +80,8 @@ class App extends Component {
    */
   handleDeleteButtonClick(){
     this.setState({
-      user_input_graph: "",
-      source_of_graph: "",
+      unprocessed_input: "",
+      processed_input: "",
       show_task_graph: false,
       show_implementation_details: false,
     })
@@ -107,11 +107,11 @@ render() {
                 handleClearButtonClick = {() => this.handleClearButtonClick()} 
                 handleDeleteButtonClick = {() => this.handleDeleteButtonClick()} 
                 handleUserInputChange={this.handleUserInputChange}
-                user_input_graph={this.state.user_input_graph} 
+                unprocessed_input={this.state.unprocessed_input} 
               />
 
              <RightPanel 
-                source_of_graph = {this.state.source_of_graph}
+                processed_input = {this.state.processed_input}
                 showImplementationDetails = {() => this.showImplementationDetails()} 
                 show_task_graph = {this.state.show_task_graph}
                 show_implementation_details = {this.state.show_implementation_details}
