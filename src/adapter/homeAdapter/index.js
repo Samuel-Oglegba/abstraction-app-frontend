@@ -22,16 +22,37 @@ export function getData(url){
 }//getData
   
 //this method calls the post method
-export function setData(url,requestData){
+export function postData(url,requestData){
     return post(url, requestData);
 }//setData
 
-//this mothod handles node click action call
-export function handleNodeClick (text){
+//this method parses the dot language input 
+//when run button is clicked on
+export function parseDotLanguageInput (dotLanguageInput){
+   let nodeUrl = baseUrl()+`/api/v1/draw-graph`;
+   let dotInput = {"userId":1,"dotInput": dotLanguageInput}
 
-   let nodeUrl = baseUrl()+`/api/v1/operation-task/${text}`;
    const theRes = 
-  
+   postData(nodeUrl,dotInput)
+    .then(res => {
+      return res.data;    
+    })//getData
+    .catch(error => { 
+        if (error.response) {
+          return error.response.data.error;
+        }
+    });//catch
+
+    return theRes;
+    
+}//parseDotLanguageInput
+
+//this mothod handles node click action call
+export function handleNodeClick (nodeName){
+
+   let nodeUrl = baseUrl()+`/api/v1/operation-task/${nodeName}`;
+
+   const theRes = 
    getData(nodeUrl)
     //.then(sleeper(5000))
     .then(res => {
@@ -49,7 +70,7 @@ export function handleNodeClick (text){
 }//handleNodeClick
 
 //this method handles edge click action
-export function handleEdgeClick (edgeUrl, text){
+export function handleEdgeClick (edgeUrl, edgeName){
 
     const theRes =  getData(edgeUrl)
       .then(res => {

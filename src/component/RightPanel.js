@@ -70,15 +70,17 @@ export default class RightPanel extends Component {
                 setTimeout(() => { 
                   handleNodeClick(text)
                   .then(data => {
-                      externalThis.setState({ 
-                        isLoading: false,
-                        showNodeResponse: true,
-                        showEdgeResponse: false,
-                        nodeResponse: data,
-                        nodeName:text
-                      }); 
-                      //show the implementation detail
-                      externalThis.showImplementationDetails();
+                        externalThis.setState({ 
+                          isLoading: false,
+                          showNodeResponse: true,
+                          showEdgeResponse: false,
+                          nodeResponse: data,
+                          nodeName:text
+                        }); 
+                    
+                        //show the implementation detail
+                        externalThis.showImplementationDetails();                     
+                      
                    })
                    .catch(err => console.log(err));   
                  }, 500);
