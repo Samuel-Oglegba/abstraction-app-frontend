@@ -20,6 +20,8 @@ class App extends Component {
       //the task graph is from the user input - 
       //the task graph can be cleared either by the clear or delete button
       show_task_graph: false,
+      //this shows a loading sympbol on the task graph
+      isLoadingTaskGraph: false,
       //the implementation detail is for the data retrived value when edge or task is clicked
       show_implementation_details: false,
     }//state
@@ -61,18 +63,40 @@ class App extends Component {
        })  */
        let externalThis = this;
        let unprocessed_input = this.state.unprocessed_input;
+      //set the isLoading to true
+       this.setState({
+        show_task_graph: false,
+        isLoadingTaskGraph: true
+       });
 
        setTimeout(() => { 
         parseDotLanguageInput(unprocessed_input)
         .then(data => {
+          //console.log(data);
             if(data){
                 externalThis.setState({ 
                   processed_input: unprocessed_input,
                   show_task_graph: true,
+                  isLoadingTaskGraph: false
                 }); 
-            }//if          
+            }//if  
+          /*   else{
+              //TODO: handle the proper error here
+              alert("Something went south...")
+              this.setState({
+                show_task_graph: false,
+                isLoadingTaskGraph: false
+               });
+            }  */       
          })
-         .catch(err => console.log(err));   
+         .catch(err => {
+          // console.log(err);
+           this.setState({
+            show_task_graph: false,
+            isLoadingTaskGraph: false
+           });
+           alert("Something went wrong..." +err);
+          });   
        }, 500);
        
     }//if
@@ -87,6 +111,7 @@ class App extends Component {
       unprocessed_input: this.defualt_input(),
       processed_input: this.defualt_input(),
       show_task_graph: false,
+      isLoadingTaskGraph: false,
       show_implementation_details: false,
     })
   }//handleClearButtonClick
@@ -99,6 +124,7 @@ class App extends Component {
       unprocessed_input: "",
       processed_input: "",
       show_task_graph: false,
+      isLoadingTaskGraph: false,
       show_implementation_details: false,
     })
 }//handleDeleteButtonClick
@@ -130,6 +156,7 @@ render() {
                 processed_input = {this.state.processed_input}
                 showImplementationDetails = {() => this.showImplementationDetails()} 
                 show_task_graph = {this.state.show_task_graph}
+                isLoadingTaskGraph = {this.state.isLoadingTaskGraph}
                 show_implementation_details = {this.state.show_implementation_details}
                 />
 
