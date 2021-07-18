@@ -3,6 +3,7 @@ import React, { useEffect, useState, Component } from "react";
 import LeftPanel from './component/LeftPanel';
 //this pannel holds the task graph and the implementation details
 import RightPanel from './component/RightPanel';
+import { parseDotLanguageInput } from "./adapter/homeAdapter";
 
 class App extends Component {
 
@@ -15,10 +16,12 @@ class App extends Component {
       //the pannel input is for saving the user's source of the graph being navigated
       unprocessed_input: this.defualt_input(),
       //the state of the graph being navigated --(updated when the user runs any input change)
-      processed_input: this.defualt_input(),
+      processed_input: "",//this.defualt_input(),
       //the task graph is from the user input - 
       //the task graph can be cleared either by the clear or delete button
-      show_task_graph: true,
+      show_task_graph: false,
+      //this shows a loading sympbol on the task graph
+      isLoadingTaskGraph: false,
       //the implementation detail is for the data retrived value when edge or task is clicked
       show_implementation_details: false,
     }//state
@@ -30,13 +33,12 @@ class App extends Component {
      * @returns
      */
     defualt_input = () =>{
-      return 'digraph G {rankdir="LR";node[shape="box"]; '
-      + ' Fragment -> FragmentRefine[label="refine_que : queue"];'
-      + ' FragmentRefine -> Deduplicate[label="deduplicate_que : queue"]'
-      + ' Deduplicate -> Compress[label="compress_que : queue"]'
-      + ' Deduplicate -> Reorder[label="reorder_que : queue"]'
-      + ' Reorder -> Compress[label="reorder_que : queue"]'
-      + ' }';
+      return 'digraph G { rankdir="LR";node[shape="box"] '
+      +'Fragment -> FragmentRefine[label="refine_que : queue"]'
+      +'FragmentRefine -> Deduplicate[label="deduplicate_que : queue"]'
+      + 'Deduplicate -> Compress[label="compress_que : queue"]'
+      + 'Deduplicate -> Reorder[label="reorder_que : queue"]'
+      + 'Reorder -> Compress[label="reorder_que : queue"]} ';
     }//defualt_input
 
    /**
@@ -55,10 +57,48 @@ class App extends Component {
     //TODO:: check the graph syntax
     //-- ensure that the value of the input is set
     if(this.state.unprocessed_input){
-      this.setState({
+     /*  this.setState({
         processed_input: this.state.unprocessed_input,
         show_task_graph: true,
-       })  
+       })  */
+       let externalThis = this;
+       let unprocessed_input = this.state.unprocessed_input;
+      //set the isLoading to true
+       this.setState({
+        show_task_graph: false,
+        isLoadingTaskGraph: true
+       });
+
+       setTimeout(() => { 
+        parseDotLanguageInput(unprocessed_input)
+        .then(data => {
+          //console.log(data);
+            if(data){
+                externalThis.setState({ 
+                  processed_input: unprocessed_input,
+                  show_task_graph: true,
+                  isLoadingTaskGraph: false
+                }); 
+            }//if  
+          /*   else{
+              //TODO: handle the proper error here
+              alert("Something went south...")
+              this.setState({
+                show_task_graph: false,
+                isLoadingTaskGraph: false
+               });
+            }  */       
+         })
+         .catch(err => {
+          // console.log(err);
+           this.setState({
+            show_task_graph: false,
+            isLoadingTaskGraph: false
+           });
+           alert("Something went wrong..." +err);
+          });   
+       }, 500);
+       
     }//if
 
   }//handleRunGraphClick
@@ -71,6 +111,7 @@ class App extends Component {
       unprocessed_input: this.defualt_input(),
       processed_input: this.defualt_input(),
       show_task_graph: false,
+      isLoadingTaskGraph: false,
       show_implementation_details: false,
     })
   }//handleClearButtonClick
@@ -83,6 +124,7 @@ class App extends Component {
       unprocessed_input: "",
       processed_input: "",
       show_task_graph: false,
+      isLoadingTaskGraph: false,
       show_implementation_details: false,
     })
 }//handleDeleteButtonClick
@@ -114,6 +156,7 @@ render() {
                 processed_input = {this.state.processed_input}
                 showImplementationDetails = {() => this.showImplementationDetails()} 
                 show_task_graph = {this.state.show_task_graph}
+                isLoadingTaskGraph = {this.state.isLoadingTaskGraph}
                 show_implementation_details = {this.state.show_implementation_details}
                 />
 
