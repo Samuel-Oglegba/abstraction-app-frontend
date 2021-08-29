@@ -1,9 +1,12 @@
+/**
+ * this handles the navigation buttons and associated action
+ */
 import React, { Component } from "react";
 
 export default class LeftPanelNav extends Component {
-    constructor(props){  
-        super(props);  
-      } 
+  constructor(props){  
+      super(props);  
+  }//constructor
 
   /**
    * handles when the run button is clicked on
@@ -55,6 +58,8 @@ export default class LeftPanelNav extends Component {
             </ul>
         </nav>
           
-    );
-  }
-}
+    );//return
+
+  }//render
+
+}//LeftPanelNav

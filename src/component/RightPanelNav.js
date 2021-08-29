@@ -1,9 +1,12 @@
+/**
+ * this handles the UI conponent for the RightPanel navigation/actions
+ */
 import React, { Component } from "react";
 
 export default class RightPanelNav extends Component {
     constructor(props){  
         super(props);  
-      } 
+      }//constructor
 
   render() {
     return (
@@ -18,6 +21,6 @@ export default class RightPanelNav extends Component {
                 </li>
             </ul>
        </nav>          
-    );
-  }
-}
+    );//return
+  }//render
+}//RightPanelNav

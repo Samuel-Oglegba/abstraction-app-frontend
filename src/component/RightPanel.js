@@ -1,17 +1,22 @@
+/*
+*This handles the RightPanel UI component (Task graph display and Implementation details)
+**the RightPanelNav handles the navigation UI component and corresponding actions
+**the NodeClickResponse and EdgeClickResponse handles the node and edge click action respectively
+*/
 import React, { useState, useEffect, Component } from "react";
+//external libraries
 import { Graphviz } from 'graphviz-react';
 import { select } from 'd3-selection'
+//custom components and utils
 import RightPanelNav from './RightPanelNav';
 import NodeClickResponse from './NodeClickResponse';  
 import EdgeClickResponse from './EdgeClickResponse';  
-import '../App.css';
-import { baseUrl, handleNodeClick, handleEdgeClick } from "../adapter/homeAdapter";
+import { baseUrl, handleNodeClick, handleEdgeClick, splitByColon } from "../adapter/homeAdapter";
 
 export default class RightPanel extends Component {
 
    constructor(props){  
       super(props);
-
       //set the initial state
       this.state = {
          isLoading: false,
@@ -21,9 +26,9 @@ export default class RightPanel extends Component {
          nodeName:"",
          edgeResponse: [],
          edgeName: ""
-       }
-       //this.handleGraphInteractivity = this.handleGraphInteractivity.bind(this);   
-    } 
+       } 
+
+    }//constructor
 
 /**
  * handle when the compnents finish loading
@@ -32,6 +37,7 @@ export default class RightPanel extends Component {
     //loadingState();
     this.handleGraphInteractivity();
   }//componentDidMount
+
 /**
 * handle components update
 */
@@ -39,117 +45,128 @@ export default class RightPanel extends Component {
     this.handleGraphInteractivity();
   }//componentDidUpdate
 
+  /**
+   * this method handles when the implementation details should display
+   */
   showImplementationDetails = () => {
     this.props.showImplementationDetails();
   };
 
+/**
+ * this function sets the state of the GUI when a node or edge is clicked on
+ * @param {*} theThis 
+ * @param {*} displayNodeResponse 
+ * @param {*} theNodeName 
+ * @param {*} nodeResponseData 
+ * @param {*} displayEdgeResponse 
+ * @param {*} theEdgeName 
+ * @param {*} edgeResponseData 
+ */
+  setStateWhenNodeOrEdgeIsClick = (theThis, 
+        displayNodeResponse, theNodeName, nodeResponseData,
+        displayEdgeResponse, theEdgeName, edgeResponseData) =>{
+
+    theThis.setState({ 
+       isLoading: false,
+       showNodeResponse: displayNodeResponse,
+       showEdgeResponse: displayEdgeResponse,
+       nodeResponse: nodeResponseData,
+       nodeName:theNodeName,
+       showEdgeResponse:displayEdgeResponse,
+       edgeResponse: edgeResponseData,
+       edgeName: theEdgeName
+
+     });//setState
+
+ }//setStateWhenNodeOrEdgeIsClick
+
   /**
-   * handle graph click
+   * handle task graph click action/intaraction
    */
   handleGraphInteractivity = () =>{
         //get the component state
         let externalThis = this;
-
         let nodes = select("g");
         nodes.selectAll("g").on("click", function(){
-        var node = select(this);
-         
-            //ensure the node/edge is not empty
+        let node = select(this);
+          //ensure the node/edge is not empty
           if(!node.selectAll('text').empty()){
-
-              var text = node.selectAll('text').text();
-              var id = node.attr('id');
-              //var class1 = node.attr('class');              
-              var dotElement = id.replace(/^a_/, '');
-               
-              //show loading sign
-              externalThis.setState({ isLoading: true, showEdgeResponse: false, showNodeResponse: false}); 
+              let text = node.selectAll('text').text(); //node or edge name
+              let id = node.attr('id');//let class1 = node.attr('class');              
+              let dotElement = id.replace(/^a_/, '');             
+              externalThis.setState({ isLoading: true, showEdgeResponse: false, showNodeResponse: false});  //show loading sign
 
                if(dotElement.includes("node")){
                   //call method to handle node click
-                setTimeout(() => { 
-                  handleNodeClick(text)
-                  .then(data => {
-                        externalThis.setState({ 
-                          isLoading: false,
-                          showNodeResponse: true,
-                          showEdgeResponse: false,
-                          nodeResponse: data,
-                          nodeName:text
-                        }); 
-                    
-                        //show the implementation detail
-                        externalThis.showImplementationDetails();                     
-                      
-                   })
-                   .catch(err => console.log(err));   
-                 }, 500);
-                          
+                  externalThis.runNodeClickAction(text)        
                }//if
-               else{
-                 //get the title of the edge
-                  var title = node.select("title").text();
-                  //split the title into respective task
-                  let edgeName;
-                  if(text.includes(":")){
-                    edgeName = text.split(':');
-                    edgeName = edgeName[0].trim();
-                  }
-                  else{
-                    edgeName = text;
-                  }
-                  let taskArray = title.includes("->") ? title.split('->'): title.split('--');
-
-                  let edgeUrl = baseUrl()+`/api/v1/edge-task/${edgeName}/${taskArray[0]}/${taskArray[1]}`;
-                
-                  //call method to handle edge click action                
-                  setTimeout(() => { 
-                      handleEdgeClick(edgeUrl, text)
-                      .then(data => {
-                        //console.log(data);
-                          externalThis.setState({ 
-                            isLoading: false,
-                            showNodeResponse: false,
-                            showEdgeResponse: true,
-                            nodeResponse: [],
-                            edgeResponse: data,
-                            edgeName:text
-                          }); 
-                           //show the implementation detail
-                           externalThis.showImplementationDetails();
-                      })
-                      .catch(err => console.log(err));  
-                    }, 500);        
-
+               else{                                
+                  let theEdgeName = splitByColon(text); //split the title into respective task
+                  let title = node.select("title").text(); //get the title of the edge and nodes              
+                  let taskArray = title.includes("->") ? title.split('->'): title.split('--'); //get the node related to the edge
+                  //call the edge click action function
+                  externalThis.runEdgeClickAction(theEdgeName,taskArray[0],taskArray[1]);      
                }//else
-
-          }
+          }//if
           else{
             document.getElementById("show_implementation").innerHTML = 'The edge/node is empty'
           }//else       
-      
-      });
-
+      });//selectAll
   }//handleGraphInteractivity
 
-  /////////////////////// NODE OPERAION /////////////////////
-  //this method display node result
-  displayNodeResult(){
+  /**
+   * handle when an edge is clicked on
+   * @param {*} edgeName 
+   * @param {*} task1 
+   * @param {*} task2 
+   */
+  runEdgeClickAction = (edgeName,task1,task2) =>{
+        let edgeUrl = baseUrl()+`/api/v1/edge-task/${edgeName}/${task1}/${task2}`;
+        let externalThis = this;        
+        externalThis.setState({ isLoading: true, showEdgeResponse: false, showNodeResponse: false}); //show loading sign
 
+      setTimeout(() => { 
+        handleEdgeClick(edgeUrl, edgeName).then(data => {
+            externalThis.setStateWhenNodeOrEdgeIsClick(externalThis,false,"",[],true,edgeName,data); //set the state 
+             externalThis.showImplementationDetails();//show the implementation detail
+        })
+        .catch(err => console.log(err));}, 500);   
+  }//runEdgeClickAction
+
+  /**
+  * handle when a node is clicked on
+  * @param {*} nodeName 
+  */
+  runNodeClickAction = (nodeName) =>{
+      let externalThis = this;
+      externalThis.setState({ isLoading: true, showEdgeResponse: false, showNodeResponse: false}); //show loading sign
+      
+    setTimeout(() => { 
+      handleNodeClick(nodeName)
+      .then(data => {
+          externalThis.setStateWhenNodeOrEdgeIsClick(externalThis,true,nodeName,data,false,"",[]);//set the state  
+            //show the implementation detail
+            externalThis.showImplementationDetails();
+      })
+      .catch(err => console.log(err));}, 500);   
+
+  }//runNodeClickAction
+  
+  /**
+   * this method display node result
+   * @returns 
+   */
+  displayNodeResult(){
     let externalThis = this;
-    return <table className='table table-dark table-bordered'>
+    return (<table className='table table-dark table-bordered'>
        <thead>
         <tr>
             <th colSpan='3'>
-                <h4>
-                    {externalThis.state.nodeName} <small>(function name)</small>
-                </h4>
+                <h4>{externalThis.state.nodeName} <small>(function name)</small></h4>
             </th>
         </tr>
         <tr>
-            <th>Communication</th>
-            <th>Task Link</th>
-            <th>Abstract Type</th>
+          <th>Communication</th><th>Task Link</th><th>Abstract Type</th>
         </tr>
       </thead>
       <tbody>
@@ -161,44 +178,16 @@ export default class RightPanel extends Component {
         }
       </tbody>
     </table>
-     
+     )//return
   }//displayNodeResult
 
-  //handle when an edge is clicked from the node result
-  runEdgeClickAction = (edgeName,task1,task2) =>{
-        let edgeUrl = baseUrl()+`/api/v1/edge-task/${edgeName}/${task1}/${task2}`;
-        let externalThis = this;
-
-        //show loading sign
-        externalThis.setState({ isLoading: true, showEdgeResponse: false, showNodeResponse: false}); 
-
-      setTimeout(() => { 
-        handleEdgeClick(edgeUrl, edgeName)
-        .then(data => {
-            externalThis.setState({ 
-              isLoading: false,
-              showNodeResponse: false,
-              showEdgeResponse: true,
-              nodeResponse: [],
-              edgeResponse: data,
-              edgeName:edgeName
-            }); 
-             //show the implementation detail
-             externalThis.showImplementationDetails();
-        })
-        .catch(err => console.log(err)); 
-      }, 500);   
-  }//runEdgeClickAction
-
-  /////////////////////// END NODE OPERATION///////////////////////////
-
-
-  ///////////////////// EDGE OPERATION /////////////////////////
-    //this method display's edge result
+    /**
+     * this method display's edge result
+     * @returns 
+     */
     displayEdgeResult(){  
-
       let externalThis = this;
-      return <table className='table table-dark table-bordered'>
+      return (<table className='table table-dark table-bordered'>
         <thead>
            <tr>
               <th colSpan="2">
@@ -206,8 +195,7 @@ export default class RightPanel extends Component {
               </th>
             </tr>
           <tr>
-              <th>#</th>
-              <th>Task Connected</th>
+              <th>#</th><th>Task Connected</th>
           </tr>
         </thead>
         <tbody>
@@ -217,36 +205,10 @@ export default class RightPanel extends Component {
           }
         </tbody>
       </table>
-      
+      )//return      
     }//displayNodeResult
 
-     //handle when a node is clicked from the edge result
-     runNodeClickAction = (nodeName) =>{
-          // console.log("you clicke on an edge " +nodeName);
-          let externalThis = this;
-          //show loading sign
-          externalThis.setState({ isLoading: true, showEdgeResponse: false, showNodeResponse: false}); 
-          
-        setTimeout(() => { 
-          handleNodeClick(nodeName)
-          .then(data => {
-              externalThis.setState({ 
-                isLoading: false,
-                showNodeResponse: true,
-                showEdgeResponse: false,
-                nodeResponse: data,
-                edgeResponse: [],
-                nodeName:nodeName
-              }); 
-               //show the implementation detail
-               externalThis.showImplementationDetails();
-          })
-          .catch(err => console.log(err)); 
-        }, 500);   
 
-    }//runNodeClickAction
-
- ///////////////////// END EDGE OPERATION ////////////////////
   render() {
     const options = { "fit":false, scale:1, "height":"200px", width: null, "zoom":false, "zoomScaleExtent":[0,1,10] };
     let show_implementation_detail = this.props.show_implementation_details;
@@ -287,7 +249,9 @@ export default class RightPanel extends Component {
             </div>
                     
         </div>
-    );
-  }
 
-}
+    );//return
+
+  }//render
+
+}//RightPanel

@@ -1,9 +1,15 @@
+/**
+ * This organizes all the UI component of the GUI
+ **the LeftPanel import manages the left side of the GUI (dot languate input and controls)
+ **the RightPanel import manages the right side of the GUI (dot graph display and the implementation details)
+ */
 import React, { useEffect, useState, Component } from "react";
 //this panel holds the graph source (user input)
 import LeftPanel from './component/LeftPanel';
 //this pannel holds the task graph and the implementation details
 import RightPanel from './component/RightPanel';
-import { parseDotLanguageInput } from "./adapter/homeAdapter";
+//this import handles the logic of the GUI
+import { parseDotLanguageInput, defualt_dedup_input } from "./adapter/homeAdapter";
 
 class App extends Component {
 
@@ -11,35 +17,22 @@ class App extends Component {
     //TODO: add a file to show how things work on the high level
     super(props); 
 
-    //set the initial state  
+    //set the initial GUI state 
     this.state = {
       //the pannel input is for saving the user's source of the graph being navigated
-      unprocessed_input: this.defualt_input(),
-      //the state of the graph being navigated --(updated when the user runs any input change)
-      processed_input: "",//this.defualt_input(),
-      //the task graph is from the user input - 
+      unprocessed_input: defualt_dedup_input(),
+      //the state of the graph being navigated --(updated when the user clicks run for any input change)
+      processed_input: "",
+      //this handles the display of the task graph -- the task graph is from the user input
       //the task graph can be cleared either by the clear or delete button
       show_task_graph: false,
       //this shows a loading sympbol on the task graph
       isLoadingTaskGraph: false,
-      //the implementation detail is for the data retrived value when edge or task is clicked
+      //the implementation detail is for the data retrived when edge or task is clicked
       show_implementation_details: false,
     }//state
 
   }//constructor
-
-    /**
-     * this function returns the default graph input for the dedup application
-     * @returns
-     */
-    defualt_input = () =>{
-      return 'digraph G { rankdir="LR";node[shape="box"] '
-      +'Fragment -> FragmentRefine[label="refine_que : queue"]'
-      +'FragmentRefine -> Deduplicate[label="deduplicate_que : queue"]'
-      + 'Deduplicate -> Compress[label="compress_que : queue"]'
-      + 'Deduplicate -> Reorder[label="reorder_que : queue"]'
-      + 'Reorder -> Compress[label="reorder_que : queue"]} ';
-    }//defualt_input
 
    /**
    * this function handles user graph source changes
@@ -57,10 +50,7 @@ class App extends Component {
     //TODO:: check the graph syntax
     //-- ensure that the value of the input is set
     if(this.state.unprocessed_input){
-     /*  this.setState({
-        processed_input: this.state.unprocessed_input,
-        show_task_graph: true,
-       })  */
+
        let externalThis = this;
        let unprocessed_input = this.state.unprocessed_input;
       //set the isLoading to true
@@ -70,8 +60,8 @@ class App extends Component {
        });
 
        setTimeout(() => { 
-        parseDotLanguageInput(unprocessed_input)
-        .then(data => {
+         //process the user's dot language input
+        parseDotLanguageInput(unprocessed_input).then(data => {
           //console.log(data);
             if(data){
                 externalThis.setState({ 
@@ -79,25 +69,16 @@ class App extends Component {
                   show_task_graph: true,
                   isLoadingTaskGraph: false
                 }); 
-            }//if  
-          /*   else{
-              //TODO: handle the proper error here
-              alert("Something went south...")
-              this.setState({
-                show_task_graph: false,
-                isLoadingTaskGraph: false
-               });
-            }  */       
-         })
-         .catch(err => {
+            }//if              
+         }).catch(err => {
           // console.log(err);
            this.setState({
             show_task_graph: false,
             isLoadingTaskGraph: false
            });
            alert("Something went wrong..." +err);
-          });   
-       }, 500);
+          });  //catch
+       }, 500);//setTimeout
        
     }//if
 
@@ -108,12 +89,12 @@ class App extends Component {
    */
   handleClearButtonClick(){
       this.setState({
-      unprocessed_input: this.defualt_input(),
-      processed_input: this.defualt_input(),
+      unprocessed_input: defualt_dedup_input(),
+      processed_input: defualt_dedup_input(),
       show_task_graph: false,
       isLoadingTaskGraph: false,
       show_implementation_details: false,
-    })
+    })//setState
   }//handleClearButtonClick
 
   /**
@@ -126,7 +107,7 @@ class App extends Component {
       show_task_graph: false,
       isLoadingTaskGraph: false,
       show_implementation_details: false,
-    })
+    })//setState
 }//handleDeleteButtonClick
 
  /**
@@ -138,12 +119,17 @@ class App extends Component {
   })
 }//showImplementationDetails
 
+/**
+ * displays the UI component for the LeftPanel and RightPanel
+ * @returns 
+ */
 render() {
     return (
           
       <div className="container outerContainer">
         
         <div className="row">
+         {/*    The UI component that holds the dot languague input  */}
             <LeftPanel 
                 handleRunGraphClick = {() => this.handleRunGraphClick()} 
                 handleClearButtonClick = {() => this.handleClearButtonClick()} 
@@ -151,7 +137,7 @@ render() {
                 handleUserInputChange={this.handleUserInputChange}
                 unprocessed_input={this.state.unprocessed_input} 
               />
-
+           {/*    The UI component that holds the display for the task graph and implementation details */}
              <RightPanel 
                 processed_input = {this.state.processed_input}
                 showImplementationDetails = {() => this.showImplementationDetails()} 
@@ -163,8 +149,10 @@ render() {
         </div>
 
       </div>
-    );
-  }
-}
+    );//return
+
+  }//render
+
+}//App
 
 export default App;
