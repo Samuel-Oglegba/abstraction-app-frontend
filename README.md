@@ -1,5 +1,5 @@
 # Getting Started **
---** This GUI provides navigation of the abstract level of an app into the lower level implementation details of the app
+--** This GUI provides navigation of the abstraction level of an app into the lower level implementation details of the app
 -- The entry point/file of the GUI is the index.js in the src folder
 
 # Running the GUI on Docker** 
