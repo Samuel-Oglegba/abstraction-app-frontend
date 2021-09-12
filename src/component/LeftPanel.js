@@ -1,10 +1,14 @@
+/**
+ * This handles the actions of the user input (dot language input)
+ **the LeftPanelNav imported handles all of the LeftPanel menu and actions 
+ */
 import React, { Component } from "react";
 import LeftPanelNav from './LeftPanelNav';
 
 export default class LeftPanel extends Component {
-    constructor(props){  
-        super(props);  
-      } 
+  constructor(props){  
+    super(props);  
+  }//constructor 
 
   /**
    * handles when the run button is clicked on
@@ -36,9 +40,14 @@ export default class LeftPanel extends Component {
     this.props.handleUserInputChange(event);
   };
 
+/**
+ * displays the UI component for the LeftPanel
+ * @returns 
+ */
   render() {
+
     return (
-        <div className="col-sm-4">
+      <div className="col-sm-4">
         <h2>Dot Language</h2>
           <LeftPanelNav  handleRunGraphClick = {() => this.runGraphClick()} 
           handleClearButtonClick = {() => this.clearButtonClick()} 
@@ -49,6 +58,9 @@ export default class LeftPanel extends Component {
           onChange={this.userInputChanged} value={this.props.unprocessed_input} ></textarea>      
       
       </div>
-    );
-  }
-}
+
+    );//return
+
+  }//render
+
+}//LeftPanel

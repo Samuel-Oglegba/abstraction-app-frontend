@@ -1,11 +1,23 @@
+/**
+ * This file handles the general api call method
+ */
 import Axios from "axios";
 
+/**
+ * this function returns the Axios instance
+ * @returns 
+ */
 function returnAxiosInstance() {
     //return Axios.create(initializers);
     return Axios.create();
-  }
+ }//returnAxiosInstance
   
-  export function get(url){
+/**
+ * this method makes GET http request
+ * @param {} url 
+ * @returns 
+ */
+export function get(url){
     const axios = returnAxiosInstance();
 
     const headers = {
@@ -16,8 +28,14 @@ function returnAxiosInstance() {
 
     return axios.get(url,headers);
 
-  }
+  }//get
   
+  /**
+   * this method makes POST http request
+   * @param {*} url 
+   * @param {*} requestData 
+   * @returns 
+   */
   export function post(url, requestData){
     const axios = returnAxiosInstance();
     const headers = {
@@ -27,4 +45,5 @@ function returnAxiosInstance() {
     }
 
     return axios.post(url, requestData, headers);
-  }
+
+  }//post

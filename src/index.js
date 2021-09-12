@@ -1,7 +1,12 @@
+/**
+ * This is the entry point to the GUI
+ * this file imports all the external css and js files used in the GUI
+ * the APP.js file import cotains all the GUI components
+ */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
+import './index.css';
 import reportWebVitals from './reportWebVitals';
 //import boostrap
 import $ from 'jquery';
