@@ -1,9 +1,10 @@
 /**
  * this handles the navigation buttons and associated action
  */
-import React, { Component } from "react";
+import React, { useRef, Component } from "react";
 
 export default class LeftPanelNav extends Component {
+   
   constructor(props){  
       super(props);  
   }//constructor
@@ -29,6 +30,18 @@ export default class LeftPanelNav extends Component {
     this.props.handleDeleteButtonClick();
   };//runDeleteGraphClick
 
+  /**
+   * handle file upload
+   * @returns 
+   */
+   onFileChange = (event) => {
+    this.props.handleOnFileChange(event);
+   };//onFileChange
+
+   onFileUpload = () => {
+    this.props.handleOnFileUpload();
+   };//runDeleteGraphClick
+
   render() {
     return (
         <nav className="navbar navbar-expand-sm bg-dark navbar-dark">
@@ -38,8 +51,14 @@ export default class LeftPanelNav extends Component {
                   File
                 </a>
                 <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a className="dropdown-item" href="#">Open File</a>
-                  <a className="dropdown-item" href="#">Open Folder</a>
+                  {/* <a className="dropdown-item custom-file-upload" for="file" href="#">Open File </a>  */}
+               
+                      <input type="file" id="file" onChange={this.onFileChange} />
+                    
+                      <button onClick={this.onFileUpload}>Upload</button>
+                              
+
+                 {/*   <a className="dropdown-item" href="#">Open Folder</a>   */}
                   <div className="dropdown-divider"></div>
                   <a className="dropdown-item" href="#">Save</a>
                 </div>

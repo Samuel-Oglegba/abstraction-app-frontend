@@ -42,16 +42,41 @@ export function postData(url,requestData){
 }//setData
 
 /**
+ * this handles api calls for file upload
+ * @param {*} formData 
+ * @returns 
+ */
+export function handleFileUploadInput(formData){
+    let url = baseUrl()+`/api/v1/upload-graph`;
+    formData.append(
+      "userId",1
+    );
+
+    const theRes = 
+    postData(url,formData)
+    .then(res => {
+      return res.data;    
+    })//getData
+    .catch(error => { 
+        if (error.response) {
+          return error.response.data.error;
+        }
+    });//catch
+
+    return theRes;
+}
+
+/**
  * this method parses the dot language input when run button is clicked on 
  * @param {*} dotLanguageInput 
  * @returns 
  */
 export function parseDotLanguageInput (dotLanguageInput){
-   let nodeUrl = baseUrl()+`/api/v1/draw-graph`;
+   let url = baseUrl()+`/api/v1/draw-graph`;
    let dotInput = {"userId":1,"dotInput": dotLanguageInput}
 
    const theRes = 
-   postData(nodeUrl,dotInput)
+   postData(url,dotInput)
     .then(res => {
       return res.data;    
     })//getData
@@ -117,12 +142,15 @@ export function handleEdgeClick (edgeUrl, edgeName){
  * this returns the default dot language for dedup application
  */
 export function defualt_dedup_input() {
-  return 'digraph G { rankdir="LR";node[shape="box"] '
+  return "";
+  /* return 'digraph G { rankdir="LR";node[shape="box"] '
       +'Fragment -> FragmentRefine[label="refine_que : queue"]'
       +'FragmentRefine -> Deduplicate[label="deduplicate_que : queue"]'
       + 'Deduplicate -> Compress[label="compress_que : queue"]'
       + 'Deduplicate -> Reorder[label="reorder_que : queue"]'
       + 'Reorder -> Compress[label="reorder_que : queue"]} ';  
+   */
+      
 }//defualt_dedup_input
 
 /**

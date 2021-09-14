@@ -41,3 +41,33 @@ code {
 .outerContainer{
   margin-top:30px;
 }
+
+/* styling the upload file */
+/* [type="file"] {
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute !important;
+  white-space: nowrap;
+  width: 1px;
+}
+
+[type="file"] + a {
+  background-color: #000;
+  border-radius: 4rem;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  padding-left: 2rem 4rem;
+}
+
+[type="file"]:focus + a,
+[type="file"] + a:hover {
+    background-color: #f15d22;
+}
+
+[type="file"]:focus + a {
+  outline: 1px dotted #000;
+} */

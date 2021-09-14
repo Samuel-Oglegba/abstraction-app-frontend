@@ -10,6 +10,17 @@ export default class LeftPanel extends Component {
     super(props);  
   }//constructor 
 
+    // On file upload (click the upload button)
+    onFileChange = (event) => {
+      //alert("ode");
+      this.props.handleFileUploadChange(event);
+    };//onFileChange
+
+    //when the user clicks on upload
+    onFileUpload = () => {
+      this.props.handleOnFileUpload();
+    };//runGraphClick
+
   /**
    * handles when the run button is clicked on
    */
@@ -52,10 +63,12 @@ export default class LeftPanel extends Component {
           <LeftPanelNav  handleRunGraphClick = {() => this.runGraphClick()} 
           handleClearButtonClick = {() => this.clearButtonClick()} 
           handleDeleteButtonClick = {() => this.deleteButtonClick()} 
+          handleOnFileChange = {this.onFileChange} 
+          handleOnFileUpload = {this.onFileUpload} 
            />
 
           <textarea className="letPanel" name="unprocessed_input" id="unprocessed_input" 
-          onChange={this.userInputChanged} value={this.props.unprocessed_input} ></textarea>      
+          onChange={this.userInputChanged} value={this.props.unprocessed_input} placeholder="enter task graph here or upload (.dg format) from the file menu..."></textarea>      
       
       </div>
 

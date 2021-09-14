@@ -3,13 +3,13 @@
  **the LeftPanel import manages the left side of the GUI (dot languate input and controls)
  **the RightPanel import manages the right side of the GUI (dot graph display and the implementation details)
  */
-import React, { useEffect, useState, Component } from "react";
+import React, { useEffect, useState, Component, useRef } from "react";
 //this panel holds the graph source (user input)
 import LeftPanel from './component/LeftPanel';
 //this pannel holds the task graph and the implementation details
 import RightPanel from './component/RightPanel';
 //this import handles the logic of the GUI
-import { parseDotLanguageInput, defualt_dedup_input } from "./adapter/homeAdapter";
+import { parseDotLanguageInput, handleFileUploadInput } from "./adapter/homeAdapter";
 
 class App extends Component {
 
@@ -20,7 +20,7 @@ class App extends Component {
     //set the initial GUI state 
     this.state = {
       //the pannel input is for saving the user's source of the graph being navigated
-      unprocessed_input: defualt_dedup_input(),
+      unprocessed_input: "",
       //the state of the graph being navigated --(updated when the user clicks run for any input change)
       processed_input: "",
       //this handles the display of the task graph -- the task graph is from the user input
@@ -30,6 +30,8 @@ class App extends Component {
       isLoadingTaskGraph: false,
       //the implementation detail is for the data retrived when edge or task is clicked
       show_implementation_details: false,
+      // Initially, no file is selected
+      selectedFile: null
     }//state
 
   }//constructor
@@ -42,6 +44,48 @@ class App extends Component {
       unprocessed_input: event.target.value
      }) 
   }//handleUserInputChange
+
+  /**
+   * handle file upload operation
+   * @param {*} event 
+   */
+  handleFileUploadChange = (event) => {
+    // Update the state
+    this.setState({ selectedFile: event.target.files[0] });    
+  }//handleFileUploadChange
+
+  /**
+   * this handles the post button
+   */
+   handleOnFileUpload = () => {     
+        // Create an object of formData
+        const formData = new FormData();
+        // Update the formData object
+        formData.append("file",this.state.selectedFile,this.state.selectedFile.name);//console.log(formData);
+        //set the isLoading to true
+        this.showTaskGraphIsLoading();
+        let externalThis = this; //for state management
+        setTimeout(() => { 
+          //process the user's dot language input
+          handleFileUploadInput(formData).then(data => {
+            if(data){
+                externalThis.setState({ 
+                  processed_input: data,
+                  show_task_graph: true,
+                  isLoadingTaskGraph: false
+                }); 
+            }//if              
+          }).catch(err => {
+          // console.log(err);
+            this.setState({
+            show_task_graph: false,
+            isLoadingTaskGraph: false
+            });
+            alert("Something went wrong..." +err);
+          });  //catch
+        }, 500);//setTimeout  
+
+  }//handleOnFileUpload
   
   /**
    * this function runs the user input to display the task graph
@@ -54,10 +98,7 @@ class App extends Component {
        let externalThis = this;
        let unprocessed_input = this.state.unprocessed_input;
       //set the isLoading to true
-       this.setState({
-        show_task_graph: false,
-        isLoadingTaskGraph: true
-       });
+       this.showTaskGraphIsLoading();
 
        setTimeout(() => { 
          //process the user's dot language input
@@ -85,12 +126,23 @@ class App extends Component {
   }//handleRunGraphClick
 
   /**
+   * this functions displays the the task graph loading operation
+   */
+   showTaskGraphIsLoading(){
+      //set the isLoading to true
+      this.setState({
+        show_task_graph: false,
+        isLoadingTaskGraph: true
+       });
+  }//showTaskGraphIsLoading
+
+  /**
    * this function resets the source graph input back to the defualt - clear btn clicked
    */
   handleClearButtonClick(){
       this.setState({
-      unprocessed_input: defualt_dedup_input(),
-      processed_input: defualt_dedup_input(),
+      unprocessed_input: "",
+      processed_input: "",
       show_task_graph: false,
       isLoadingTaskGraph: false,
       show_implementation_details: false,
@@ -135,6 +187,8 @@ render() {
                 handleClearButtonClick = {() => this.handleClearButtonClick()} 
                 handleDeleteButtonClick = {() => this.handleDeleteButtonClick()} 
                 handleUserInputChange={this.handleUserInputChange}
+                handleFileUploadChange = {this.handleFileUploadChange} 
+                handleOnFileUpload = {() => this.handleOnFileUpload()} 
                 unprocessed_input={this.state.unprocessed_input} 
               />
            {/*    The UI component that holds the display for the task graph and implementation details */}
