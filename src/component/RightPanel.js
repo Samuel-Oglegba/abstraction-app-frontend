@@ -210,7 +210,7 @@ export default class RightPanel extends Component {
 
 
   render() {
-    const options = { "fit":false, scale:1, "height":"200px", width: null, "zoom":false, "zoomScaleExtent":[0,1,10] };
+    const options = { "fit":false, scale:1, "height":null, width: null, "zoom":false, "zoomScaleExtent":[0,1,10] };
     let show_implementation_detail = this.props.show_implementation_details;
     let show_task_graph = this.props.show_task_graph;
     let isLoadingTaskGraph = this.props.isLoadingTaskGraph;
