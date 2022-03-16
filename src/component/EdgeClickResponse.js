@@ -26,6 +26,9 @@ handNodeClick = (taskName) => {
             <td>
               <a href="#" onClick={() => this.handNodeClick(taskName)} > {taskName}</a>
           </td>
+          <td>
+                <button type="button" class="btn btn-danger">vul. info</button>
+          </td>
         </tr>
     ); //render
   }//render

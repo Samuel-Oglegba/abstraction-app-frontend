@@ -128,7 +128,7 @@ export default class RightPanel extends Component {
       setTimeout(() => { 
         handleEdgeClick(edgeUrl, edgeName).then(data => {
             externalThis.setStateWhenNodeOrEdgeIsClick(externalThis,false,"",[],true,edgeName,data); //set the state 
-             externalThis.showImplementationDetails();//show the implementation detail
+            externalThis.showImplementationDetails();//show the implementation detail
         })
         .catch(err => console.log(err));}, 500);   
   }//runEdgeClickAction
@@ -158,7 +158,7 @@ export default class RightPanel extends Component {
    */
   displayNodeResult(){
     let externalThis = this;
-    return (<table className='table table-dark table-bordered'>
+    return (<table className='table table-bordered'>
        <thead>
         <tr>
             <th colSpan='3'>
@@ -166,13 +166,16 @@ export default class RightPanel extends Component {
             </th>
         </tr>
         <tr>
-          <th>Communication</th><th>Task Link</th><th>Abstract Type</th>
+          <th>Communication</th><th>Task Link</th><th>Abstract Type</th><th></th>
         </tr>
       </thead>
       <tbody>
         {  externalThis.state.nodeResponse ? externalThis.state.nodeResponse.map(function(object, i){  
             return <NodeClickResponse key={i} handleEdgeClick = {(edgeName,task1, task2) => externalThis.runEdgeClickAction(edgeName,task1,task2)} 
-            handleNodeClick = {(nodeName) => externalThis.runNodeClickAction(nodeName)}
+            handleNodeClick = {(nodeName) => externalThis.runNodeClickAction(nodeName)} 
+           
+            handleVulInfoClick = {(edgeName,task1, task2) => externalThis.runVulInfoClickAction(edgeName,task1,task2)} 
+
             obj={object} index={i} />;  
           }) : "Something went south..."
         }
@@ -182,12 +185,12 @@ export default class RightPanel extends Component {
   }//displayNodeResult
 
     /**
-     * this method display's edge result
+     * this method display's edge result --table-dark 
      * @returns 
      */
     displayEdgeResult(){  
       let externalThis = this;
-      return (<table className='table table-dark table-bordered'>
+      return (<table className='table table-bordered'>
         <thead>
            <tr>
               <th colSpan="2">
@@ -195,7 +198,7 @@ export default class RightPanel extends Component {
               </th>
             </tr>
           <tr>
-              <th>#</th><th>Task Connected</th>
+              <th>#</th><th>Task Connected</th><th></th>
           </tr>
         </thead>
         <tbody>
@@ -208,6 +211,20 @@ export default class RightPanel extends Component {
       )//return      
     }//displayNodeResult
 
+//////////////////////// VULNERABILITY INFORMATION //////////////////
+    /**
+     * WHEN VULNERABILITY INFO IS CLICKED ON
+     * @param {*} edgeName 
+     * @param {*} task1 
+     * @param {*} task2 
+     */
+    runVulInfoClickAction = (edgeName,task1,task2) =>{
+      //let externalThis = this;
+      this.props.showVulnerabilityInformation(edgeName,task1,task2);
+
+    }//runVulInfoClickAction
+
+//////////////////////// END VULNERABILITY INFORMATION //////////////////
 
   render() {
     const options = { "fit":false, scale:1, "height":null, width: null, "zoom":false, "zoomScaleExtent":[0,1,10] };
@@ -230,11 +247,11 @@ export default class RightPanel extends Component {
             </div>
 
             <h4>Implementation Details</h4>
-            <div className="rightPanelButtom table-dark" id="show_implementation">
+            <div className="rightPanelButtom " id="show_implementation">
 
                 { this.state.isLoading ? "Loading..." : null}
                 
-                {/*  for node respons */}
+                {/*  for node respons -- table-dark */}
                 {
                   this.state.showNodeResponse && show_implementation_detail ?  this.displayNodeResult()  : ""                
                 }
