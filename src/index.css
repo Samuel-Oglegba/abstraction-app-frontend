@@ -14,7 +14,7 @@ code {
 
 /* left panel */
 .letPanel {
-  height: 400px;
+  height: 515px;
   width: 100%;
   background: rgb(241, 240, 240);
 }
@@ -32,10 +32,18 @@ code {
 .rightPanelButtom {
   height: 280px;
   width: 100%;
-  color: aliceblue;
- /*  background: rgb(15, 0, 0); */
- /* text-align: center; */
+  background: rgb(241, 240, 240);
+ /*   color: aliceblue;
+  background: rgb(15, 0, 0);
+   text-align: center; */
  overflow: auto;
+}
+
+.vulnerabilityClass{
+  height: 280px;
+  width: 100%;
+  color: aliceblue;
+  overflow: auto;
 }
 
 .outerContainer{

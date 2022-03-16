@@ -19,19 +19,25 @@ class App extends Component {
 
     //set the initial GUI state 
     this.state = {
-      //the pannel input is for saving the user's source of the graph being navigated
+      // the pannel input is for saving the user's source of the graph being navigated
       unprocessed_input: "",
-      //the state of the graph being navigated --(updated when the user clicks run for any input change)
+      // the state of the graph being navigated --(updated when the user clicks run for any input change)
       processed_input: "",
-      //this handles the display of the task graph -- the task graph is from the user input
-      //the task graph can be cleared either by the clear or delete button
+      // this handles the display of the task graph -- the task graph is from the user input
+      // the task graph can be cleared either by the clear or delete button
       show_task_graph: false,
-      //this shows a loading sympbol on the task graph
+      // this shows a loading sympbol on the task graph
       isLoadingTaskGraph: false,
       //the implementation detail is for the data retrived when edge or task is clicked
       show_implementation_details: false,
       // Initially, no file is selected
-      selectedFile: null
+      selectedFile: null,
+      //VARIABLES FOR VULNERABILITY
+      show_vulnerability_info: false,
+      vulEdgeName: "",
+      vulTask1: "",
+      vulTask2: "",
+
     }//state
 
   }//constructor
@@ -146,6 +152,7 @@ class App extends Component {
       show_task_graph: false,
       isLoadingTaskGraph: false,
       show_implementation_details: false,
+      show_vulnerability_info: false,
     })//setState
   }//handleClearButtonClick
 
@@ -159,6 +166,7 @@ class App extends Component {
       show_task_graph: false,
       isLoadingTaskGraph: false,
       show_implementation_details: false,
+      show_vulnerability_info: false,
     })//setState
 }//handleDeleteButtonClick
 
@@ -170,6 +178,67 @@ class App extends Component {
     show_implementation_details: true,
   })
 }//showImplementationDetails
+
+//////////////////////// VULNERABILITY INFORMATION //////////////////
+
+showVulnerabilityInformation = (theVulEdgeName,theVulTask1,theVulTask2) => {     
+  this.setState({
+    show_vulnerability_info: true,
+    vulEdgeName: theVulEdgeName,
+    vulTask1: theVulTask1,
+    vulTask2: theVulTask2
+  })
+  
+}//showVulnerabilityInformation
+
+/**
+ * This formats the vulnerability information to display
+ * @returns 
+ */
+displayVulInfoResult(){  
+  let externalThis = this;
+  return (<table className='table table-bordered table-dark'>
+    <thead>
+       <tr>
+          <th colSpan="2">
+              <h6> Exploit Requirement(s) Associated with {externalThis.state.vulTask1}, {externalThis.state.vulTask2}, {externalThis.state.vulEdgeName} </h6>
+          </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+           <th>Exploit Title</th>
+           <td>Dokany Stack-based Buffer Overflow Privilege Escalation</td>
+        </tr>
+        <tr>
+           <th>Tested Software Version</th>
+           <td>1.2.0.1000</td>
+        </tr>
+        <tr>
+           <th>Affected Version</th>
+           <td>{"<="} 1.2.0.1000</td>
+        </tr>
+        <tr>
+           <th>Vulnerable files</th>
+           <td>stdio.h, windows.h, </td>
+        </tr>
+        <tr>
+           <th>Triggering the Bug </th>
+           <td>#define BUFSIZE 896 -- modifying the buffer size <br/> <br/> 
+               <p>Connecting to the device handle “dokan_1” and sending inputted buffer of more than 776 bytes to IOCTL 0x00222010 is enough to corrupt the stack cookie and BSOD the box </p>
+            </td>
+        </tr>
+        <tr>
+           <th>Vendor Fix URL </th>
+           <td><a target="_blank" href="https://github.com/dokan-dev/dokany/releases/tag/v1.2.1.1000"> https://github.com/dokan-dev/dokany/releases/tag/v1.2.1.1000 </a> </td>
+        </tr>
+    </tbody>
+  </table>
+  )//return      
+}//displayVulInfoResult
+
+//////////////////////// END VULNERABILITY INFORMATION //////////////////
+
 
 /**
  * displays the UI component for the LeftPanel and RightPanel
@@ -198,7 +267,20 @@ render() {
                 show_task_graph = {this.state.show_task_graph}
                 isLoadingTaskGraph = {this.state.isLoadingTaskGraph}
                 show_implementation_details = {this.state.show_implementation_details}
-                />
+
+                showVulnerabilityInformation = {this.showVulnerabilityInformation} 
+              />
+
+             <h2>Vulnerability Information</h2>
+            <div className="vulnerabilityClass table-dark" id="show_vulnerability_info">
+
+                
+                {/*  for edge respons */}
+                {
+                  this.state.show_vulnerability_info ?  this.displayVulInfoResult()  : "the vulnerability details go here..."                
+                }
+               
+            </div>
 
         </div>
 

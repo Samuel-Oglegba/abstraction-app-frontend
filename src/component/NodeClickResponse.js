@@ -23,7 +23,7 @@ handleEdgeClick = (edgeName, task1, task2) => {
    * @param {*} taskName 
    */
   handNodeClick = (taskName) => {
-    this.props.handleNodeClick(taskName);
+    this.props.handleVulInfoClick(taskName);
   };//handNodeClick
 
   /**
@@ -35,6 +35,20 @@ handleEdgeClick = (edgeName, task1, task2) => {
     let operation_reverse = operation == "POP" ? "PUSH" : "POP";
     alert("Abstract-Type-Operation:: " + operation + " -> " + operation_reverse );
   };//handleAbstractTypeClick
+
+  //////////// VULNERABILITY INFORMATION //////////////////////
+  /**
+   * handles when vulnerability information is clicked on
+   * @param {*} edgeName 
+   * @param {*} task1 
+   * @param {*} task2 
+   */
+  handleVulInfoClick = (edgeName, task1, task2) =>{
+    this.props.handleVulInfoClick(edgeName,task1,task2);
+  };//handleVulInfoClick
+
+  //////////////////////// END VULNERABILITY INFORMATION //////////////////
+
 
   /**
    * displays the UI component
@@ -60,8 +74,11 @@ handleEdgeClick = (edgeName, task1, task2) => {
                 {connector} 
                 <a href="#" onClick={() => this.handNodeClick(task2)} >{task2} </a>
             </td>
-            <td>
+           <td>
                 <a href="#" onClick={() => this.handleAbstractTypeClick(operation)} > {data.abstractType.name} </a>
+            </td> 
+            <td>
+                <button type="button" class="btn btn-danger" onClick={() => this.handleVulInfoClick(edgeName, task1, task2)}  >vul. info</button>
             </td>           
         </tr>
     );//return
