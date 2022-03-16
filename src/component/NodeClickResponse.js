@@ -23,7 +23,7 @@ handleEdgeClick = (edgeName, task1, task2) => {
    * @param {*} taskName 
    */
   handNodeClick = (taskName) => {
-    this.props.handleVulInfoClick(taskName);
+    this.props.handleNodeClick(taskName);
   };//handNodeClick
 
   /**

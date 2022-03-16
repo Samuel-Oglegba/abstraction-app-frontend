@@ -201,7 +201,7 @@ displayVulInfoResult(){
     <thead>
        <tr>
           <th colSpan="2">
-              <h6> Exploit Requirement(s) Associated with {externalThis.state.vulTask1}, {externalThis.state.vulTask2}, {externalThis.state.vulEdgeName} </h6>
+              <h5> Exploit Requirement(s) Associated with {externalThis.state.vulTask1}, {externalThis.state.vulTask2}, {externalThis.state.vulEdgeName} </h5>
           </th>
         </tr>
     </thead>
